@@ -1,4 +1,5 @@
 import os
+import cv2 as cv
 class Person:
     def __init__(self, first_name, last_name, gender):
         self.first_name = first_name
@@ -6,52 +7,128 @@ class Person:
         self.gender = gender
         self.registered = False
 
-        # Create a folder for the person based on their name
-        self.create_folder()
-
-    def register(self):
-        self.registered = True
-
     def create_folder(self):
-        base_folder = "photos"
+        base_folder = "dataset"
         folder_name = os.path.join(base_folder, f"{self.first_name}_{self.last_name}")
-        
+
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
             print(f"Created folder for {self.first_name} {self.last_name} in the 'photos' folder.")
+       
+    def train(self):
+        base_folder = "dataset"
+        folder_name = os.path.join(base_folder, f"{self.first_name}_{self.last_name}")
+
+    # Initialize video capture from the default camera (webcam)
+        capture = cv.VideoCapture(0)
+
+    # Load a pre-trained Haar Cascade classifier for face detection
+        harr_cascade = cv.CascadeClassifier('harr_face.xml')
+
+    # Counter to keep track of the number of captured face images.
+        image_count = 0        
+
+    # Start an infinite loop for real-time video processing           
+        while True:
+
+    # Capture a frame from the webcam
+            boolean, frame = capture.read()
+    
+            if boolean == True:
+        #Convert the frame to grayscale (preferred for face detection)
+                gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+
+        # Detect faces in the grayscale frame
+                face_rect = harr_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=10)
+
+        # Draw rectangles around detected faces
+                for (x, y, w, h) in face_rect:
+                    cv.rectangle(frame, (x, y), (x + w, y + h), (0, 255), thickness=2)
+
+                key = cv.waitKey(1)
+                if key == 32:  # Press 'Space' key to capture a face image.
+                    image_count += 1
+                    face_roi = frame[y:y + h, x:x + w]
+                    image_filename = os.path.join(folder_name, f'face_{image_count}.jpg')
+                    cv.imwrite(image_filename, face_roi)
+                    cv.putText(frame, str(image_count), (x, y-10), cv.FONT_HERSHEY_COMPLEX, 1.0, (0, 255, 0), thickness=2)
+                    print(f"Face {image_count} captured and saved as {image_filename}")
+                if image_count == 50                   :
+                    break
+
+        # Display the frame with detected faces
+                cv.imshow("DETECTED FACES", frame)
+
+        # Check for user input to exit the loop.
+                key = cv.waitKey(1)
+                if key == 27:  # Press 'Esc' key to exit the loop.
+                    break
+
+        # Check if the 'x' key is pressed to exit the loop
+                if cv.waitKey(20) == ord('x'):
+                    break
+
+    # Release the video capture
+        capture.release()
+
+    # Close the OpenCV display window
+        cv.destroyAllWindows()
+
+    # Getter for first_name
+    def get_first_name(self):
+        return self.first_name
+
+    # Setter for first_name
+    def set_first_name(self, first_name):
+        self.first_name = first_name
+
+    # Getter for last_name
+    def get_last_name(self):
+        return self.last_name
+
+    # Setter for last_name
+    def set_last_name(self, last_name):
+        self.last_name = last_name
+
+    # Getter for gender
+    def get_gender(self):
+        return self.gender
+
+    # Setter for gender
+    def set_gender(self, gender):
+        self.gender = gender
 
 class Parent(Person):
-    def __init__(self, first_name, last_name, gender, guardian_name, phone_number):
+    def __init__(self, first_name, last_name, gender, phone_number):
         super().__init__(first_name, last_name, gender)
-        self.guardian_name = guardian_name
         self.phone_number = phone_number
 
-class Checkpoint:
-    def __init__(self, name, latitude, longitude):
-        self.name = name
-        self.latitude = latitude
-        self.longitude = longitude
+    # Getter for phone_number
+    def get_phone_number(self):
+        return self.phone_number
+
+    # Setter for phone_number
+    def set_phone_number(self, phone_number):
+        self.phone_number = phone_number
+
+    def train(self):
+        pass
 
 class Student(Person):
-    def __init__(self, first_name, last_name, gender, student_id, checkpoint, parents=None):
+    def __init__(self, first_name, last_name, gender, student_id, parent_first_name, parent_last_name, parent_gender, parent_phone_number):
         super().__init__(first_name, last_name, gender)
         self.student_id = student_id
         self.checkpoint = checkpoint
-        self.parents = parents if parents is not None else []
+        self.parent = Parent(parent_first_name, parent_last_name, parent_gender, parent_phone_number)
+    
+    # Getter for student_id
+    def get_student_id(self):
+        return self.student_id
 
-    def register(self):
-        self.registered = True
+    # Setter for student_id
+    def set_student_id(self, student_id):
+        self.student_id = student_id
 
-
-class UnknownIndividual:
-    def __init__(self, face_encoding, timestamp, location, additional_info=None):
-        self.face_encoding = face_encoding  # Facial encoding data
-        self.timestamp = timestamp  # Date and time of the encounter
-        self.location = location  # Location of the encounter
-        self.additional_info = additional_info  # Additional information about the encounter (optional)
-
-    def __str__(self):
-        return f"Timestamp: {self.timestamp}, Location: {self.location}, Additional Info: {self.additional_info}"
 
 class SchoolBusStaff(Person):
     def __init__(self, first_name, last_name, gender, staff_id, role):
@@ -59,15 +136,18 @@ class SchoolBusStaff(Person):
         self.staff_id = staff_id
         self.role = role
 
-    def register(self):
-        self.registered = True
+    # Getter for staff_id
+    def get_staff_id(self):
+        return self.staff_id
 
-        # Example usage:
-if __name__ == "__main__":
-    person1 = Student("John", "Doe", "Male", 44545 , )
+    # Setter for staff_id
+    def set_staff_id(self, staff_id):
+        self.staff_id = staff_id
 
-    # Check if folders were created
-    if os.path.exists("John_Doe"):
-        print("Folder for John Doe exists.")
-   
+    # Getter for role
+    def get_role(self):
+        return self.role
 
+    # Setter for role
+    def set_role(self, role):
+        self.role = role

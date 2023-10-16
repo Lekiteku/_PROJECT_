@@ -1,7 +1,7 @@
 import cv2 as cv
 import os 
 
-DIR = r'C:\Users\12143\Documents\PROJECT FINAL YEAR\Face Recognition Code\photos\faces\manijo'
+DIR = r'.\dateset\faces\manijo'
 
 # Initialize video capture from the default camera (webcam)
 capture = cv.VideoCapture(0)

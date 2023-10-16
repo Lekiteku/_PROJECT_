@@ -3,7 +3,7 @@ import numpy as np  # Import 'numpy' as 'np' for numerical operations
 import os  # Import the 'os' module for file and directory operations
 
 # Define the directory where training images are located.
-DIR = r'C:\Users\12143\Documents\PROJECT FINAL YEAR\Face Recognition Code\photos\faces'
+DIR = r'.\dataset\faces'
 
 # Create an empty list to store the names of the individuals whose faces you want to recognize.
 people = []
@@ -18,10 +18,8 @@ print(people)
 # Create a LBPH (Local Binary Pattern Histogram) face recognizer.
 face_recognizer = cv.face_LBPHFaceRecognizer.create()
 
-
 # Load the trained face recognition model from 'face_trained.yml'.
 face_recognizer.read("face_trained.yml")
-
 
 # Open a video capture from the default camera (index 0).
 capture = cv.VideoCapture(0)
@@ -42,23 +40,14 @@ while True:
         # Loop through the detected faces and draw rectangles and labels.
         for (x, y, w, h) in face_rect:
             faces_roi = gray[y:y+h, x:x+h]
-        
+            
             # Recognize the face and get the label and confidence.
             label, confidence = face_recognizer.predict(faces_roi)
+            cv.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), thickness=1)
+            cv.rectangle(frame, (x, y-40), (x+w, y), (0, 255, 0), -1)
+            cv.putText(frame, str(people[label]), (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), thickness=2)
+            print(f'label = {people[label]} with confidence of {confidence}')
 
-            if confidence > 50:
-                # Draw the person's name and a rectangle around the detected face.
-                cv.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), thickness=1)
-                cv.rectangle(frame, (x, y-40), (x+w, y), (0, 255, 0), -1)
-                cv.putText(frame, str(people[label]), (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), thickness=2)
-                print(f'label = {people[label]} with confidence of {confidence}')
-
-            else:
-                cv.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), thickness=1)
-                cv.rectangle(frame, (x, y-40), (x+w, y), (0, 0, 255), -1)
-                cv.putText(frame, "UNKNOWN", (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), thickness=2)
-                print(f'label = {people[label]} with confidence of {confidence}')
-        
         # Display the frame with detected faces.
         cv.imshow("DETECTED FACES", frame)
         
