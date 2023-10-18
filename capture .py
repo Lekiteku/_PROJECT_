@@ -28,8 +28,7 @@ while True:
         # Draw rectangles around detected faces
         for (x, y, w, h) in face_rect:
             cv.rectangle(frame, (x, y), (x + w, y + h), (0, 255), thickness=2)
-
-        key = cv.waitKey(1)
+            key = cv.waitKey(1)
         if key == 32:  # Press 'Space' key to capture a face image.
             image_count += 1
             face_roi = frame[y:y + h, x:x + w]
@@ -40,7 +39,7 @@ while True:
             if image_count == 50                   :
                 break
 
-        # Display the frame with detected faces
+        # Displa  y the frame with detected faces
         cv.imshow("DETECTED FACES", frame)
         # Check for user input to exit the loop.
         key = cv.waitKey(1)
