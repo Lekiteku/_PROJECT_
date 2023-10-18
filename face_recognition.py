@@ -3,7 +3,7 @@ import numpy as np  # Import 'numpy' as 'np' for numerical operations
 import os  # Import the 'os' module for file and directory operations
 
 # Define the directory where training images are located.
-DIR = r'.\dataset\faces'
+DIR = r'.\dataset'
 
 # Create an empty list to store the names of the individuals whose faces you want to recognize.
 people = []

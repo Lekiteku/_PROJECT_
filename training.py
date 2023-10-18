@@ -6,7 +6,7 @@ import numpy as np
 haar_cascade = cv.CascadeClassifier('harr_face.xml')
 
 # Define the directory where training images are located
-DIR = r'C:\Users\12143\Documents\PROJECT FINAL YEAR\Face Recognition Code\photos\faces'
+DIR = r'.\dataset'
 
 # Create an empty list to store the names of individuals
 people = []
