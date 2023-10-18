@@ -118,7 +118,6 @@ class Student(Person):
     def __init__(self, first_name, last_name, gender, student_id, parent_first_name, parent_last_name, parent_gender, parent_phone_number):
         super().__init__(first_name, last_name, gender)
         self.student_id = student_id
-        self.checkpoint = checkpoint
         self.parent = Parent(parent_first_name, parent_last_name, parent_gender, parent_phone_number)
     
     # Getter for student_id
