@@ -1,7 +1,7 @@
 import cv2 as cv
 import os 
 
-DIR = r'.\dateset\faces\manijo'
+DIR = r'.\dataset\manijo'
 
 # Initialize video capture from the default camera (webcam)
 capture = cv.VideoCapture(0)
@@ -10,14 +10,14 @@ capture = cv.VideoCapture(0)
 harr_cascade = cv.CascadeClassifier('harr_face.xml')
 
 # Counter to keep track of the number of captured face images.
-image_count = 0        
+image_count = 0                   
 
 # Start an infinite loop for real-time video processing           
 while True:
     # Capture a frame from the webcam
     boolean, frame = capture.read()
     
-    if boolean == True:
+    if boolean == True:           
         #Convert the frame to grayscale (preferred for face detection)
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 
