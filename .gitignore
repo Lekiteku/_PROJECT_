@@ -1,1 +1,4 @@
 dataset/
+features.npy
+labels.npy
+face_trained.yml
