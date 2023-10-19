@@ -1,5 +1,7 @@
 import multiprocessing
 import cv2 as cv
+import location as loc
+
 
 
 def face_recognition_process():
@@ -38,25 +40,27 @@ def face_recognition_process():
     # Close the OpenCV display window
     cv.destroyAllWindows()
 
-def location_tracking_process(shared_list, lock):
+def location_tracking_process():
     while True:
         # Perform location tracking and logging tasks
-        data = "Location data"
-        
+        lat , long = loc.Location.generate_random_coordinates()
+        live_location = (lat,long)
+        print(live_location)
         # Acquire the lock before modifying the shared list
-        lock.acquire()
-        shared_list.append(data)
-        lock.release()  # Release the lock
+        # lock.acquire()
+        # shared_list.append(data)
+        # lock.release()  # Release the lock
         print("Location tracking process is running")
 
 if __name__ == '__main__':
     with multiprocessing.Manager() as manager:
-        shared_list = manager.list()  # Create a shared list
-        lock = manager.Lock()  # Create a lock
+        # shared_list = manager.list()  # Create a shared list
+        # #lock = manager.Lock()  # Create a lock
+        # shared_list = []
 
         # Create two processes, passing the shared list and lock as arguments
-        face_process = multiprocessing.Process(target=face_recognition_process, args=(shared_list, lock))
-        location_process = multiprocessing.Process(target=location_tracking_process, args=(shared_list, lock))
+        face_process = multiprocessing.Process(target=face_recognition_process)
+        location_process = multiprocessing.Process(target=location_tracking_process)
 
         # Start the processes
         face_process.start()
