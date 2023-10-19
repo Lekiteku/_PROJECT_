@@ -4,7 +4,7 @@ import location as loc
 
 
 
-def face_recognition_process():
+def face_recognition_process(output_queue):
     # Initialize video capture from the default camera (webcam)
     capture = cv.VideoCapture(0)
 
@@ -33,6 +33,7 @@ def face_recognition_process():
             # Check if the 'x' key is pressed to exit the loop
             if cv.waitKey(20) == ord('x'):
                 break
+    print("Facial recognition process is running")
 
     # Release the video capture
     capture.release()
@@ -40,17 +41,15 @@ def face_recognition_process():
     # Close the OpenCV display window
     cv.destroyAllWindows()
 
-def location_tracking_process():
+def location_tracking_process(output_queue):
     while True:
         # Perform location tracking and logging tasks
         lat , long = loc.Location.generate_random_coordinates()
         live_location = (lat,long)
         print(live_location)
-        # Acquire the lock before modifying the shared list
-        # lock.acquire()
-        # shared_list.append(data)
-        # lock.release()  # Release the lock
+    
         print("Location tracking process is running")
+        
 
 if __name__ == '__main__':
     with multiprocessing.Manager() as manager:
@@ -59,12 +58,11 @@ if __name__ == '__main__':
         # shared_list = []
 
         # Create two processes, passing the shared list and lock as arguments
-        face_process = multiprocessing.Process(target=face_recognition_process)
-        location_process = multiprocessing.Process(target=location_tracking_process)
+        face_process = multiprocessing.Process(target=face_recognition_process,args=output_queue)
+        location_process = multiprocessing.Process(target=location_tracking_process,args=ououtput_queue)
 
         # Start the processes
         face_process.start()
         location_process.start()
 
-        # You can add more logic to control and manage these processes if needed.
-        # The lock ensures that only one process can modify the shared list at a time.
+    
