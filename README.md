@@ -16,3 +16,5 @@ Open capture.py and update the DIR variable to match the location of your datase
 Run training.py to train the images for recognition. This is essential for building the face recognition model.
 ## Step 5: Face Recognition
 Finally, run face_recognition.py to see the final results of your face recognition system.
+
+Please make sure you have all the necessary libraries and dependencies installed as mentioned in the requirements.txt file for the project to work smoothly.Use the command --pip install -r requirements.txt--
