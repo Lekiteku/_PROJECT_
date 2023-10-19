@@ -1,3 +1,5 @@
 dataset/
-.npy
-.yml
+features.npy
+labels.npy
+labels.yml
+main_test.py
