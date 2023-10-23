@@ -4,3 +4,6 @@ labels.npy
 labels.yml
 main_test.py
 test.py
+test.database
+jokes.py
+.vscode
