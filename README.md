@@ -17,4 +17,4 @@ Run training.py to train the images for recognition. This is essential for build
 ## Step 5: Face Recognition
 Finally, run face_recognition.py to see the final results of your face recognition system.
 
-Please make sure you have all the necessary libraries and dependencies installed as mentioned in the requirements.txt file for the project to work smoothly.Use the command --pip install -r requirements.txt--
+Please make sure you have all the necessary libraries and dependencies installed by running the requirements.txt file for the project to work smoothly.Use the command --pip install -r requirements.txt--
