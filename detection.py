@@ -4,7 +4,7 @@ import cv2 as cv
 capture = cv.VideoCapture(0)
 
 # Load a pre-trained Haar Cascade classifier for face detection
-harr_cascade = cv.CascadeClassifier('harr_face.xml')
+harr_cascade = cv.CascadeClassifier('haar_face.xml')
 
 # Start an infinite loop for real-time video processing
 while True:

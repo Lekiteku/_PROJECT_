@@ -25,7 +25,7 @@ face_recognizer.read("face_trained.yml")
 capture = cv.VideoCapture(0)
 
 # Load a Haar Cascade classifier for face detection from the XML file 'harr_face.xml'.
-harr_cascade = cv.CascadeClassifier('harr_face.xml')
+harr_cascade = cv.CascadeClassifier('haar_face.xml')
 
 # Create an infinite loop to capture and recognize faces in real-time video.
 while True:
