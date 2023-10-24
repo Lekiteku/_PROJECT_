@@ -7,17 +7,16 @@ class CommunicationManager:
     # A static method to enable location communication
     @staticmethod
     def enable_location_communication():
-        max
-
+        print(10)
     # A static method to disable location communication
     @staticmethod
     def location_communication():
-
+        print(12)
         
 # A static method to enable location communication
     @staticmethod
     def enable_location_communication():
-
+        print(3)
 
 
 
