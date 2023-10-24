@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 # Load Haar Cascade for face detection
-haar_cascade = cv.CascadeClassifier('harr_face.xml')
+haar_cascade = cv.CascadeClassifier('haar_face.xml')
 
 # Define the directory where training images are located
 DIR = r'.\dataset'

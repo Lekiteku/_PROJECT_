@@ -4,7 +4,7 @@ import cv2 as cv
 capture = cv.VideoCapture(0)
 
 # Load a pre-trained Haar Cascade classifier for face detection
-harr_cascade = cv.CascadeClassifier('harr_face.xml')
+haar_cascade = cv.CascadeClassifier('haar_face.xml')
 
 # Start an infinite loop for real-time video processing
 while True:
@@ -16,7 +16,7 @@ while True:
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
 
         # Detect faces in the grayscale frame
-        face_rect = harr_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=10)
+        face_rect = haar_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=10)
 
         # Draw rectangles around detected faces
         for (x, y, w, h) in face_rect:

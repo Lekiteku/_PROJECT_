@@ -24,8 +24,8 @@ face_recognizer.read("face_trained.yml")
 # Open a video capture from the default camera (index 0).
 capture = cv.VideoCapture(0)
 
-# Load a Haar Cascade classifier for face detection from the XML file 'harr_face.xml'.
-harr_cascade = cv.CascadeClassifier('harr_face.xml')
+# Load a Haar Cascade classifier for face detection from the XML file 'haar_face.xml'.
+haar_cascade = cv.CascadeClassifier('haar_face.xml')
 
 # Create an infinite loop to capture and recognize faces in real-time video.
 while True:
@@ -35,7 +35,7 @@ while True:
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)  # Convert the frame to grayscale
         
         # Detect faces in the grayscale frame using the Haar Cascade classifier.
-        face_rect = harr_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=8)
+        face_rect = haar_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=8)
         
         # Loop through the detected faces and draw rectangles and labels.
         for (x, y, w, h) in face_rect:
