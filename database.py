@@ -1,4 +1,5 @@
 import sqlite3
+import numpy as np
 
 class DatabaseManager:
     DATABASE_FILE = 'test.db'  # Default database filename
@@ -165,16 +166,10 @@ class DatabaseManager:
         finally:
             conn.close()
 
-    import sqlite3
-import numpy as np
-
-class YourClassName:
-    # ... other methods and class attributes ...
-
     @staticmethod
-    def get_students_guardians_checkpoints(cls):
+    def get_location_data_arrays():
         try:
-            conn = sqlite3.connect(cls.DATABASE_FILE)
+            conn = sqlite3.connect(DatabaseManager.DATABASE_FILE)
             cursor = conn.cursor()
 
             # Query to retrieve student and guardian information along with checkpoint details
@@ -194,45 +189,21 @@ class YourClassName:
 
             result = cursor.fetchall()
 
-            # Convert the result into a NumPy array for better data manipulation
-            data_array = np.array(result, dtype=[('Student First Name', 'U50'),
-                                                ('Student Last Name', 'U50'),
-                                                ('Guardian First Name', 'U50'),
-                                                ('Guardian Last Name', 'U50'),
-                                                ('Guardian Phone Number', 'U50'),
-                                                ('Checkpoint Longitude', float),
-                                                ('Checkpoint Latitude', float)])
+            student_names = []
+            parent_names_phones = []
+            latitudes = []
+            longitudes = []
 
-            return data_array
+            for row in result:
+                student_names.append(f"{row['STUDENT FIRST NAME']} {row['STUDENT LAST NAME']}")
+                parent_names_phones.append(f"{row['GUARDIAN FIRST NAME']} {row['GUARDIAN LAST NAME']} ({row['GUARDIAN PHONE NUMBER']})")
+                latitudes.append(row['CHECKPOINT LATITUDE'])
+                longitudes.append(row['CHECKPOINT LONGITUDE'])
+
+            return np.array(longitudes), np.array(latitudes), np.array(student_names), np.array(parent_names_phones)
 
         except sqlite3.Error as e:
-            print(f"Error getting student and guardian data: {e}")
+            print(f"Error getting location data: {e}")
         finally:
             conn.close()
-
-
-if __name__ == '__main__':
-    # Create the database and tables
-    DatabaseManager.set_database_file('my_database.db')  # Set the database file name
-
-    DatabaseManager.create_database()
-
-    # Insert data into the tables
-    DatabaseManager.insert_checkpoint(12.34, 56.78, 'Sample Location')
-
-    # Insert a guardian
-    DatabaseManager.insert_guardian('John', 'Doe', '123-456-7890', 'G12345')
-
-    # Insert a student and link to a checkpoint and guardian
-    DatabaseManager.insert_student('Alice', 'Smith', DatabaseManager.get_last_checkpoint_id(), 2)
-
-    # Query data from the database
-    conn = sqlite3.connect(DatabaseManager.DATABASE_FILE)
-    cursor = conn.cursor()
-
-    # Example: Retrieve all students with their guardian's phone number
-    students_with_guardian_phone = cursor.fetchall()
-    for student in students_with_guardian_phone:
-        print(f'Student: {student[0]} {student[1]}, Guardian Phone: {student[2]}')
-
-    conn.close()
+            
