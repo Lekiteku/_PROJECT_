@@ -1,43 +1,44 @@
 import random
 import time
 import numpy as np
+import math
 
 class Location:
+  
     @staticmethod
-    def haversine_distance(coord1, coord2):
-        # Radius of the Earth in meters
-        earth_radius = 6371000
+    def haversine_distance(lat1, lon1, lat2, lon2):
+        """
+        Calculate the Haversine distance between a single set of latitude and longitude and an array of coordinates.
+        The result is in meters.
+        """
+    # Radius of the Earth in meters
+        earth_radius = 6371000  # 6371 km converted to meters
 
-        lat1, lon1 = np.radians(coord1)
-        lat2, lon2 = np.radians(coord2)
+    # Convert latitude and longitude from degrees to radians
+        lat1 = math.radians(lat1)
+        lon1 = math.radians(lon1)
+        lat2 = np.radians(lat2)
+        lon2 = np.radians(lon2)
 
+    # Haversine formula
         dlat = lat2 - lat1
         dlon = lon2 - lon1
-
-        a = np.sin(dlat / 2) ** 2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon / 2) ** 2
+        a = np.sin(dlat/2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon/2)**2
         c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
 
+        # Calculate the distance in meters
         distance = earth_radius * c
         return distance
-
+   
     @staticmethod
-    def calculate_distance(live_location, student_list):
-        distances = []
-        for student in student_list:
-            student_coords = (student['latitude'], student['longitude'])
-            distance = Location.haversine_distance(live_location, student_coords)
-            distances.append(distance)
-        return np.array(distances)
+    def assess_distance(lat1, lon1, lat2_array, lon2_array, distance_threshold):
+        # Calculate the Haversine distance using the existing haversine_distance function
+        distances = Location.haversine_distance(lat1, lon1, lat2_array, lon2_array)
 
-    @staticmethod
-    def assess_distances(live_location, student_list):
-        set_limit = 500
-        distances = Location.calculate_distance(live_location, student_list)
-        for distance in distances:
-            if distance < set_limit:
-                print(f"It's {distance:.2f} meters away.")
-            else:
-                print(f"Distance from point A is {distance:.2f} meters.")
+        # Check if the distances are greater than the specified threshold
+        indices = np.where(distances > distance_threshold)[0]
+
+        return indices
 
     @staticmethod
     def generate_random_coordinates(num_coordinates):
@@ -62,14 +63,3 @@ class Location:
 
         # Return the live location as a tuple
         return latitude, longitude
-
-# Example usage:
-num_coordinates = 32  # Specify the number of coordinates you want to generate
-student_list = [{'latitude': 52.5200, 'longitude': 13.4050}, {'latitude': 48.8566, 'longitude': 2.3522}]
-live_location = Location.generate_random_live_location()
-
-Location.assess_distances(live_location, student_list)
-random_coordinates = Location.generate_random_coordinates(num_coordinates)
-print(f"Random Live Location: {live_location}")
-print("Random Coordinates:")
-print(random_coordinates)
