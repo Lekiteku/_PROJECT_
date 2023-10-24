@@ -50,7 +50,7 @@ class Location:
         time.sleep(1)
 
         # Return the coordinates as a NumPy array
-        return np.column_stack((latitudes, longitudes))
+        return latitudes, longitudes
 
     @staticmethod
     def generate_random_live_location():
