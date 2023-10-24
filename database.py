@@ -167,7 +167,7 @@ class DatabaseManager:
             conn.close()
 
     @staticmethod
-    def get_location_data_arrays():
+    def get_data_arrays():
         try:
             conn = sqlite3.connect(DatabaseManager.DATABASE_FILE)
             cursor = conn.cursor()
