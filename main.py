@@ -12,11 +12,13 @@ client_socket.connect((server_ip, server_port))
 # Open the local camera
 capture = cv2.VideoCapture(0)
 
+frame_count = 0  # Counter to keep track of sent frames
+
 while True:
     ret, frame = capture.read()
     if not ret:
         break
-    
+
     # Serialize the frame
     frame_data = pickle.dumps(frame)
     frame_size = len(frame_data)
@@ -24,8 +26,15 @@ while True:
     # Send the frame size to the server
     client_socket.sendall(frame_size.to_bytes(4, byteorder='big'))
     
+    # Log the sent frame size
+    print(f'Sent frame size: {frame_size} bytes')
+
     # Send the frame data
     client_socket.sendall(frame_data)
+    
+    # Log the number of sent frames
+    frame_count += 1
+    print(f'Sent frame {frame_count}')
 
     # Receive confidence data size
     confidence_size = int.from_bytes(client_socket.recv(4), byteorder='big')

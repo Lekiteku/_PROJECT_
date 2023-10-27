@@ -37,6 +37,9 @@ while True:
             break
         data += packet
 
+    # Log the received frame size
+    print(f'Received frame size: {data_size} bytes')
+
     frame = pickle.loads(data)
 
     if frame is not None:
