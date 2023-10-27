@@ -9,7 +9,7 @@ DIR = 'dataset'  # Update with the correct directory path
 people = [d for d in os.listdir(DIR) if os.path.isdir(os.path.join(DIR, d))]
 
 # Load the trained face recognition model
-face_recognizer = cv.face_LBPHFaceRecognizer_create()
+face_recognizer = cv.face_LBPHFaceRecognizer.create()
 face_recognizer.read("face_trained.yml")
 
 # Create a socket to listen for client connections
