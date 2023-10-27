@@ -5,7 +5,7 @@ import pickle
 import os
 
 # Define the directory where training images are located.
-DIR = 'path_to_dataset_directory'  # Update with the correct directory path
+DIR = 'dataset'  # Update with the correct directory path
 people = [d for d in os.listdir(DIR) if os.path.isdir(os.path.join(DIR, d))]
 
 # Load the trained face recognition model
