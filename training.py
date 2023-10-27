@@ -3,10 +3,10 @@ import os
 import numpy as np
 
 # Load Haar Cascade for face detection
-haar_cascade = cv.CascadeClassifier('haar_face.xml')
+haar_cascade = cv.CascadeClassifier('haar_face.xml')  # Correct the XML file name
 
 # Define the directory where training images are located
-DIR = r'dataset'
+DIR = 'dataset'  # Use the appropriate directory name
 
 # Create an empty list to store the names of individuals
 people = sorted(os.listdir(DIR))  # Ensure alphabetical sorting
@@ -37,6 +37,8 @@ def create_train():
 
                     features.append(faces_roi)
                     labels.append(label)
+            else:
+                print(f"Skipped: {img_path} (could not read image)")
 
 # Call the 'create_train()' function to prepare the training data
 create_train()
@@ -46,10 +48,13 @@ features = np.array(features, dtype=np.float32)
 labels = np.array(labels)
 
 # Create LBPH (Local Binary Pattern Histogram) face recognizer
-face_recognizer = cv.face_LBPHFaceRecognizer_create()
+face_recognizer = cv.face_LBPHFaceRecognizer.create()  # Correct the creation method
 
 # Train the face recognizer using the prepared 'features' and 'labels' data
-face_recognizer.train(features, labels)
+try:
+    face_recognizer.train(features, labels)
+except cv.error as e:
+    print(f"Error during training: {e}")
 
 # Save the trained face recognizer model to a file called 'face_trained.yml'
 face_recognizer.save('face_trained.yml')
