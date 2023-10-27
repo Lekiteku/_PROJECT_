@@ -42,6 +42,8 @@ while True:
 
     frame = pickle.loads(data)
 
+    print("yesde")
+
     if frame is not None:
         # Perform face recognition on the frame
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
