@@ -26,7 +26,17 @@ print(f'Client connected from {addr}')
 haar_cascade = cv.CascadeClassifier('haar_face.xml')
 
 while True:
-    data = client_socket.recv(4096)  # Adjust the buffer size as needed
+    # Receive the data size indicating the frame length
+    data_size = int.from_bytes(client_socket.recv(4), byteorder='big')
+
+    # Receive the frame data
+    data = b''
+    while len(data) < data_size:
+        packet = client_socket.recv(data_size - len(data))
+        if not packet:
+            break
+        data += packet
+
     frame = pickle.loads(data)
 
     if frame is not None:
@@ -42,6 +52,7 @@ while True:
             confidence_data = pickle.dumps(confidence)
 
             # Send the confidence level back to the client
+            client_socket.sendall(len(confidence_data).to_bytes(4, byteorder='big'))
             client_socket.sendall(confidence_data)
 
 server_socket.close()

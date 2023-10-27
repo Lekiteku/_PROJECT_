@@ -4,7 +4,7 @@ import socket
 import pickle
 
 # Create a socket to connect to the Azure VM server
-server_ip = 'azure_vm_public_ip'  # Replace with your Azure VM's public IP address
+server_ip = '20.127.143.111'  # Replace with your Azure VM's public IP address
 server_port = 12345  # Choose a port for communication
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((server_ip, server_port))
@@ -17,15 +17,28 @@ while True:
     if not ret:
         break
     
-    # Serialize and send the frame to the server
-    data = pickle.dumps(frame)
-    client_socket.sendall(data)
-
-    # Receive confidence level from the server
-    confidence_data = client_socket.recv(1024)  # Adjust the buffer size as needed
-    confidence = pickle.loads(confidence_data)
+    # Serialize the frame
+    frame_data = pickle.dumps(frame)
+    frame_size = len(frame_data)
     
-    # Display the confidence level
+    # Send the frame size to the server
+    client_socket.sendall(frame_size.to_bytes(4, byteorder='big'))
+    
+    # Send the frame data
+    client_socket.sendall(frame_data)
+
+    # Receive confidence data size
+    confidence_size = int.from_bytes(client_socket.recv(4), byteorder='big')
+    
+    # Receive and display the confidence level
+    confidence_data = b''
+    while len(confidence_data) < confidence_size:
+        packet = client_socket.recv(confidence_size - len(confidence_data))
+        if not packet:
+            break
+        confidence_data += packet
+
+    confidence = pickle.loads(confidence_data)
     print(f'Confidence: {confidence}')
 
     cv2.imshow('Local Video Feed', frame)
