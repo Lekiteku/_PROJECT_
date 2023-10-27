@@ -55,4 +55,7 @@ while True:
             client_socket.sendall(len(confidence_data).to_bytes(4, byteorder='big'))
             client_socket.sendall(confidence_data)
 
+            # Print confidence on the server
+            print(f'Confidence: {confidence}')
+
 server_socket.close()
