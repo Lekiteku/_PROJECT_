@@ -19,18 +19,22 @@ while True:
     if not ret:
         break
 
-    # Serialize the frame
-    frame_data = pickle.dumps(frame)
-    frame_size = len(frame_data)
+    # Convert the frame to JPEG format
+    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]  # Adjust JPEG quality as needed
+    _, frame_data = cv2.imencode('.jpg', frame, encode_param)
+
+    # Convert the frame data to binary
+    frame_binary = frame_data.tobytes()
     
     # Send the frame size to the server
+    frame_size = len(frame_binary)
     client_socket.sendall(frame_size.to_bytes(4, byteorder='big'))
     
     # Log the sent frame size
     print(f'Sent frame size: {frame_size} bytes')
 
     # Send the frame data
-    client_socket.sendall(frame_data)
+    client_socket.sendall(frame_binary)
     
     # Log the number of sent frames
     frame_count += 1
