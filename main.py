@@ -6,7 +6,7 @@ import pickle
 # Create a socket to connect to the Azure VM server
 server_ip = '20.127.143.111'  # Replace with your Azure VM's public IP address
 server_port = 12345  # Choose a port for communication
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 client_socket.connect((server_ip, server_port))
 
 # Open the local camera
