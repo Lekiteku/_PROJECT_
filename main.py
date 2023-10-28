@@ -1,63 +1,85 @@
-import cv2
+import cv2 as cv
 import numpy as np
 import socket
-import pickle
+import threading
 
-# Create a socket to connect to the Azure VM server
-server_ip = '20.127.143.111'  # Replace with your Azure VM's public IP address
-server_port = 12345  # Choose a port for communication
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-client_socket.connect((server_ip, server_port))
+# Function to send video frames to the server
+def send_frames():
+    # Initialize video capture from the default camera (webcam)
+    capture = cv.VideoCapture(0)
 
-# Open the local camera
-capture = cv2.VideoCapture(0)
+    # Create a UDP socket for sending frames to the server
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-frame_count = 0  # Counter to keep track of sent frames
+    # Define the server address and port
+    server_address = ('172.191.91.102', 12345)  # Replace 'server_ip_address' with the actual IP address of your Azure VM
 
-while True:
-    ret, frame = capture.read()
-    if not ret:
-        break
+    while True:
+        # Capture a frame from the webcam
+        boolean, frame = capture.read()
+        
+        if boolean == True:
+            # Convert the frame to a NumPy array
+            frame_data = frame.tobytes()
 
-    # Convert the frame to JPEG format
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]  # Adjust JPEG quality as needed
-    _, frame_data = cv2.imencode('.jpg', frame, encode_param)
+            # Send the frame to the server
+            client_socket.sendto(frame_data, server_address)
 
-    # Convert the frame data to binary
-    frame_binary = frame_data.tobytes()
-    
-    # Send the frame size to the server
-    frame_size = len(frame_binary)
-    client_socket.sendall(frame_size.to_bytes(4, byteorder='big'))
-    
-    # Log the sent frame size
-    print(f'Sent frame size: {frame_size} bytes')
-
-    # Send the frame data
-    client_socket.sendall(frame_binary)
-    
-    # Log the number of sent frames
-    frame_count += 1
-    print(f'Sent frame {frame_count}')
-
-    # Receive confidence data size
-    confidence_size = int.from_bytes(client_socket.recv(4), byteorder='big')
-    
-    # Receive and display the confidence level
-    confidence_data = b''
-    while len(confidence_data) < confidence_size:
-        packet = client_socket.recv(confidence_size - len(confidence_data))
-        if not packet:
+        # Check if the 'x' key is pressed to exit the loop
+        if cv.waitKey(1) == ord('x'):
             break
-        confidence_data += packet
 
-    confidence = pickle.loads(confidence_data)
-    print(f'Confidence: {confidence}')
+    # Release the video capture
+    capture.release()
 
-    cv2.imshow('Local Video Feed', frame)
+    # Close the client socket
+    client_socket.close()
 
-    if cv2.waitKey(1) == 27:  # Press 'Esc' to exit the loop
-        break
+# Function to display received frames
+def display_frames():
+    # Create a UDP socket for receiving frames from the server
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-capture.release()
-cv2.destroyAllWindows()
+    # Define the client address and port for receiving frames
+    client_address = ('0.0.0.0', 54321)  # Adjust the port as needed
+
+    # Bind the client socket to the address and port
+    client_socket.bind(client_address)
+
+    while True:
+        # Receive a frame from the server
+        try:
+            data, server_address = client_socket.recvfrom(65535)
+        except socket.error as e:
+            print(f"Error receiving data: {e}")
+            break
+
+        # Convert the received data to a NumPy array
+        frame = np.frombuffer(data, dtype=np.uint8)
+
+        # Reshape the frame to its original shape
+        frame = frame.reshape((480, 640, 3))
+
+        # Display the received frame in a window
+        cv.imshow("Received Frame", frame)
+
+        # Check if the 'x' key is pressed to exit the loop
+        if cv.waitKey(1) == ord('x'):
+            break
+
+    # Close the client socket
+    client_socket.close()
+
+# Start the sending and receiving threads
+send_thread = threading.Thread(target=send_frames)
+display_thread = threading.Thread(target=display_frames)
+
+send_thread.start()
+display_thread.start()
+
+# Wait for both threads to finish
+send_thread.join()
+display_thread.join()
+
+# Close the OpenCV windows
+cv.destroyAllWindows()
