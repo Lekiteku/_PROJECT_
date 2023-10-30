@@ -1,4 +1,4 @@
-#dataset/
+dataset/
 features.npy
 labels.npy
 labels.yml
