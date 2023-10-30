@@ -1,85 +1,66 @@
-import cv2 as cv
-import numpy as np
 import socket
-import threading
+import base64
+import cv2
+import numpy as np
+import os
 
-# Function to send video frames to the server
-def send_frames():
-    # Initialize video capture from the default camera (webcam)
-    capture = cv.VideoCapture(0)
 
-    # Create a UDP socket for sending frames to the server
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# Set up the client socket
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+host_ip = '192.168.0.6'  # Replace with the IP address of the Raspberry Pi
+port = 9999
+socket_address = (host_ip, port)
 
-    # Define the server address and port
-    server_address = ('172.191.91.102', 12345)  # Replace 'server_ip_address' with the actual IP address of your Azure VM
+# Define the directory where training images are located.
+DIR = r'dataset'
 
-    while True:
-        # Capture a frame from the webcam
-        boolean, frame = capture.read()
-        
-        if boolean == True:
-            # Convert the frame to a NumPy array
-            frame_data = frame.tobytes()
+# Create an empty list to store the names of the individuals whose faces you want to recognize.
+people = []
 
-            # Send the frame to the server
-            client_socket.sendto(frame_data, server_address)
+# Loop through the subdirectories in the specified directory and add their names to the 'people' list.
+for i in os.listdir(DIR):
+    people.append(i)
 
-        # Check if the 'x' key is pressed to exit the loop
-        if cv.waitKey(1) == ord('x'):
-            break
+# Print the list of people (subdirectories).
+print(people)
+haar_cascade = cv2.CascadeClassifier('haar_face.xml')
+face_recognizer = cv2.face_LBPHFaceRecognizer.create()
+face_recognizer.read("face_trained.yml")
 
-    # Release the video capture
-    capture.release()
+print("Establishing a connection with the server...")
 
-    # Close the client socket
-    client_socket.close()
-
-# Function to display received frames
-def display_frames():
-    # Create a UDP socket for receiving frames from the server
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-    # Define the client address and port for receiving frames
-    client_address = ('0.0.0.0', 54321)  # Adjust the port as needed
-
-    # Bind the client socket to the address and port
-    client_socket.bind(client_address)
+connected = False
+while True:
+    # Initial connection message to the server
+    client_socket.sendto(b'1', socket_address)
+    data, server_address = client_socket.recvfrom(65536)
+    print("Connection established with the server.")
 
     while True:
-        # Receive a frame from the server
-        try:
-            data, server_address = client_socket.recvfrom(65535)
-        except socket.error as e:
-            print(f"Error receiving data: {e}")
+        data, server_address = client_socket.recvfrom(65536)
+        image_data = base64.b64decode(data)
+        nparr = np.frombuffer(image_data, np.uint8)
+        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # Detect faces in the grayscale frame
+        face_rect = haar_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=8)
+        # Draw rectangles around detected faces
+        for (x, y, w, h) in face_rect:
+            faces_roi = gray[y:y+h, x:x+h]
+            
+            # Recognize the face and get the label and confidence.
+            label, confidence = face_recognizer.predict(faces_roi)
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), thickness=1)
+            cv2.rectangle(frame, (x, y-40), (x+w, y), (0, 255, 0), -1)
+            cv2.putText(frame, str(people[label]), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), thickness=2)
+            print(f'label = {people[label]} with confidence of {confidence}')
+
+        cv2.imshow('RECEIVING VIDEO', frame)
+    
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
             break
 
-        # Convert the received data to a NumPy array
-        frame = np.frombuffer(data, dtype=np.uint8)
-
-        # Reshape the frame to its original shape
-        frame = frame.reshape((480, 640, 3))
-
-        # Display the received frame in a window
-        cv.imshow("Received Frame", frame)
-
-        # Check if the 'x' key is pressed to exit the loop
-        if cv.waitKey(1) == ord('x'):
-            break
-
-    # Close the client socket
-    client_socket.close()
-
-# Start the sending and receiving threads
-send_thread = threading.Thread(target=send_frames)
-display_thread = threading.Thread(target=display_frames)
-
-send_thread.start()
-display_thread.start()
-
-# Wait for both threads to finish
-send_thread.join()
-display_thread.join()
-
-# Close the OpenCV windows
-cv.destroyAllWindows()
+cv2.destroyAllWindows()
+client_socket.close()
