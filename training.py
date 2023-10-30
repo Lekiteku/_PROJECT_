@@ -33,7 +33,7 @@ def create_train():
                 for (x, y, w, h) in faces_rect:
                     faces_roi = gray[y:y+h, x:x+w]
                     # Resize to a standard size (e.g., 128x128) and normalize pixel values
-                    faces_roi = cv.resize(faces_roi, (128, 128)) / 255.0
+                    faces_roi = cv.resize(faces_roi, (128, 128))
 
                     features.append(faces_roi)
                     labels.append(label)

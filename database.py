@@ -188,19 +188,18 @@ class DatabaseManager:
                 ''')
             result = cursor.fetchall()
 
-            student_names = []
-            parent_names_phones = []
+            student_id = []
+            data_infor = []
             latitudes = []
             longitudes = []
 
             for row in result:
-                student_names.append(f"{row['STUDENT ID']}")
-                parent_names_phones.append(f"{['STUDENT FIRST NAME']} {row['STUDENT LAST NAME']} {row['STUDENT ID']}{row['GUARDIAN FIRST NAME']}{row['GUARDIAN LAST NAME']} {row['GUARDIAN PHONE NUMBER']}")
+                student_id.append(f"{row['STUDENT ID']}")
+                data_infor.append(f"{row['STUDENT FIRST NAME']} {row['STUDENT LAST NAME']} {row['STUDENT ID']}{row['GUARDIAN FIRST NAME']}{row['GUARDIAN LAST NAME']} {row['GUARDIAN PHONE NUMBER']}")
                 latitudes.append(row['CHECKPOINT LATITUDE'])
                 longitudes.append(row['CHECKPOINT LONGITUDE'])
 
-            return np.array(longitudes), np.array(latitudes), np.array(student_names), np.array(parent_names_phones)
-
+            return student_id,data_infor,np.array(longitudes),np.array(latitudes)
         except sqlite3.Error as e:
             print(f"Error getting location data: {e}")
         finally:

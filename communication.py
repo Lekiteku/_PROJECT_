@@ -8,6 +8,9 @@ Class Methods:
 import numpy as np
 
 class CommunicationManager:
+    
+
+    used_location_set = set()
     """
     get_parent_info_by_location_index(parent_info, location_indexes, used_indexes):
     
@@ -19,7 +22,7 @@ class CommunicationManager:
     It checks for available location indexes, finds the unused indexes, retrieves parent information for those indexes, and returns it.
     """
     @staticmethod
-    def get_parent_info_by_location_index(parent_info, location_indexes, used_indexes):
+    def get_parent_info_by_location_index(clr,parent_info, location_indexes):
         if location_indexes.size == 0:
             print("The 'location_indexes' array is empty.")
             return None
@@ -47,6 +50,13 @@ class CommunicationManager:
     """
     @staticmethod
     def print_selected_parents(parent_info, selected_indexes):
+        selected_parents = parent_info[selected_indexes]
+        for parent in selected_parents:
+            print("Selected Parent: ", parent)
+     
+
+    @staticmethod
+    def send_facial_message(parent_info, selected_indexes):
         selected_parents = parent_info[selected_indexes]
         for parent in selected_parents:
             print("Selected Parent: ", parent)

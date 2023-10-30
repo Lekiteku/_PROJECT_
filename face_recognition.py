@@ -43,6 +43,7 @@ while True:
             
             # Recognize the face and get the label and confidence.
             label, confidence = face_recognizer.predict(faces_roi)
+            print(type(label))
             cv.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), thickness=1)
             cv.rectangle(frame, (x, y-40), (x+w, y), (0, 255, 0), -1)
             cv.putText(frame, str(people[label]), (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), thickness=2)
