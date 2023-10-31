@@ -1,3 +1,8 @@
+from os import listdir
+from PIL import Image
+
+OUTPUT_SIZE = (128,64) # The output size of each frame (or tile or Sprite) of the animation
+MONOCHROME = True # Do you want the output file to be b/w?
 
 for file in listdir():
     if file.endswith('.gif'):
