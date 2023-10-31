@@ -55,7 +55,7 @@ class DisplayManager:
         while time.time()-start_time < cls.DISPLAY_RUN_TIME:
 
         # Draw a black filled box to clear the image.
-            DisplayManager.displayMessageSuccessful()
+    
             draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
             first_name = "john "
             last_name = "lbalunye"

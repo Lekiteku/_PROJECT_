@@ -39,8 +39,7 @@ while True:
         
         # Loop through the detected faces and draw rectangles and labels.
         for (x, y, w, h) in face_rect:
-            faces_roi = gray[y:y+h, x:x+h]
-            
+            faces_roi = gray[y:y+h, x:x+h]    
             # Recognize the face and get the label and confidence.
             label, confidence = face_recognizer.predict(faces_roi)
             print(type(label))
