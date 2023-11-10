@@ -11,21 +11,21 @@ host_ip = '192.168.0.6'  # Replace with the IP address of the Raspberry Pi
 port = 9999
 socket_address = (host_ip, port)
 
-# Define the directory where training images are located.
-DIR = r'dataset'
+# # Define the directory where training images are located.
+# DIR = r'dataset'
 
-# Create an empty list to store the names of the individuals whose faces you want to recognize.
-people = []
+# # Create an empty list to store the names of the individuals whose faces you want to recognize.
+# people = []
 
-# Loop through the subdirectories in the specified directory and add their names to the 'people' list.
-for i in os.listdir(DIR):
-    people.append(i)
+# # Loop through the subdirectories in the specified directory and add their names to the 'people' list.
+# #for i in os.listdir(DIR):
+# #  people.append(i)
 
 # Print the list of people (subdirectories).
-print(people)
+#print(people)
 haar_cascade = cv2.CascadeClassifier('haar_face.xml')
-face_recognizer = cv2.face_LBPHFaceRecognizer.create()
-face_recognizer.read("face_trained.yml")
+# face_recognizer = cv2.face_LBPHFaceRecognizer.create()
+# face_recognizer.read("face_trained.yml")
 
 print("Establishing a connection with the server...")
 
@@ -33,11 +33,11 @@ connected = False
 while True:
     # Initial connection message to the server
     client_socket.sendto(b'1', socket_address)
-    data, server_address = client_socket.recvfrom(65536)
+    data, server_address = client_socket.recvfrom(212992)
     print("Connection established with the server.")
 
     while True:
-        data, server_address = client_socket.recvfrom(65536)
+        data, server_address = client_socket.recvfrom(212992)
         image_data = base64.b64decode(data)
         nparr = np.frombuffer(image_data, np.uint8)
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -50,11 +50,11 @@ while True:
             faces_roi = gray[y:y+h, x:x+h]
             
             # Recognize the face and get the label and confidence.
-            label, confidence = face_recognizer.predict(faces_roi)
+           #label, confidence = face_recognizer.predict(faces_roi)
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), thickness=1)
             cv2.rectangle(frame, (x, y-40), (x+w, y), (0, 255, 0), -1)
-            cv2.putText(frame, str(people[label]), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), thickness=2)
-            print(f'label = {people[label]} with confidence of {confidence}')
+            #cv2.putText(frame, str(people[label]), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), thickness=2)
+            #print(f'label = {people[label]} with confidence of {confidence}')
 
         cv2.imshow('RECEIVING VIDEO', frame)
     
