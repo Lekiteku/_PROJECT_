@@ -1,75 +1,77 @@
-"""
-CommunicationManager Class
-
-This code defines the CommunicationManager class, a utility for managing parent information based on location indexes. It provides static methods for retrieving parent information, printing selected parents, and resetting used indexes.
-
-Class Methods:
-"""
-import numpy as np
+import socket
+import threading
 
 class CommunicationManager:
+
+    HOST_IP = '192.168.0.6'
+
+    VIDEO_PORT = 9999
+    VIDEO_BUFF_SIZE = 65536
+    VIDEO_CLIENT_ADDRESS = ""
+    video_server_socket = None
+
+    STATUS_PORT = 8888
+    STATUS_BUFF_SIZE = 1024
+    STATUS_CLIENT_ADDRESS = ""
+    status_server_socket = None
+
     
+    LOCATION_PORT = 7777
+    LOCATION_PORT_BUFF_SIZE = 1024
+    LOCATION_CLIENT_ADDRESS = ""
+    location_server_socket = None
 
-    used_location_set = set()
-    """
-    get_parent_info_by_location_index(parent_info, location_indexes, used_indexes):
+    @classmethod
+    def start_video_server(cls):
+        cls.video_server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        cls.video_server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, cls.VIDEO_BUFF_SIZE)
+        cls.video_server_socket.bind((cls.HOST,cls.VIDEO_PORT))
+
+        print(f"Video Server listening on {cls.HOST_IP}:{cls.VIDEO_PORT}")
+
+        while True:
+            data, client_address = cls.video_server_socket.recvfrom(cls.VIDEO_BUFF_SIZE)
+            if data == b'1':
+                print('Video connection established with', client_address)
+                cls.VIDEO_CLIENT_ADDRESS = client_address
+                break
+    @classmethod
+    def send_video_data(cls,message):
+        cls.video_server_socket.sendto(message,cls.CLIENT_ADDRESS)
+
+    @classmethod
+    def start_status_server(cls):
+        cls.status_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        cls.status_server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, cls.STATUS_BUFF_SIZE)
+        cls.status_server_socket.bind((cls.HOST_IP, cls.STATUS_PORT))
+        print(f"Status Server listening on {cls.HOST_IP}:{cls.STATUS_CLIENT_ADDRESS}")
+
+        while True:
+            data, client_address = cls.video_server_socket.recvfrom(cls.VIDEO_BUFF_SIZE)
+            if data == b'2':
+                print('Status connection established with', client_address)
+                cls.VIDEO_CLIENT_ADDRESS = client_address
+                break
     
-    This static method takes three parameters:
-    - parent_info: A NumPy array of parent information.
-    - location_indexes: A NumPy array representing location indexes.
-    - used_indexes: A set containing the indexes of previously used locations.
-    
-    It checks for available location indexes, finds the unused indexes, retrieves parent information for those indexes, and returns it.
-    """
-    @staticmethod
-    def get_parent_info_by_location_index(clr,parent_info, location_indexes):
-        if location_indexes.size == 0:
-            print("The 'location_indexes' array is empty.")
-            return None
+    @classmethod
+    def send_status_data(cls,message):
+        cls.status_server_socket.sendto(message,cls.STATUS_CLIENT_ADDRESS)
 
-        # Find the unused indexes using NumPy set operations
-        unused_indexes = np.setdiff1d(location_indexes, list(used_indexes))
+    @classmethod
+    def start_location_server(cls):
+        cls.location_server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        cls.location_server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, cls.LOCATION_BUFF_SIZE)
+        cls.location_server_socket.bind((cls.HOST,cls.LOCATION_PORT))
 
-        if unused_indexes.size == 0:
-            print("All location indexes have been used.")
-            return None
+        print(f"Video Server listening on {cls.HOST_IP}:{cls.LOCATION_PORT}")
 
-        # Get parent information corresponding to the unused indexes
-        selected_parent_info = parent_info[unused_indexes]
+        while True:
+            data, client_address = cls.video_server_socket.recvfrom(cls.LOCATION_BUFF_SIZE)
+            if data == b'1':
+                print('Video connection established with', client_address)
+                cls.LOCATION_CLIENT_ADDRESS = client_address
+                break
+    @classmethod
+    def send_location_data(cls,message):
+        cls.location_server_socket.sendto(message,cls.CLIENT_ADDRESS)
 
-        return selected_parent_info
-
-    """0
-    print_selected_parents(parent_info, selected_indexes):
-    
-    This static method takes two parameters:
-    - parent_info: A NumPy array of parent information.
-    - selected_indexes: A NumPy array containing the indexes of selected parents.
-    
-    It prints the names of selected parents corresponding to the given indexes.
-    """
-    @staticmethod
-    def print_selected_parents(parent_info, selected_indexes):
-        selected_parents = parent_info[selected_indexes]
-        for parent in selected_parents:
-            print("Selected Parent: ", parent)
-     
-
-    @staticmethod
-    def send_facial_message(parent_info, selected_indexes):
-        selected_parents = parent_info[selected_indexes]
-        for parent in selected_parents:
-            print("Selected Parent: ", parent)
-
-    """
-    reset_used_indexes(used_indexes):
-    
-    This static method takes a single parameter, used_indexes, which is a set that stores the used indexes. It clears the set of used indexes, effectively resetting it.
-    """
-    @staticmethod
-    def reset_used_indexes(used_indexes):
-        used_indexes.clear()
-
-"""
-The class is designed to be used without creating an instance. It separates the operations from the class instance, making it a useful utility for managing parent information without the need for class instantiation. The class itself doesn't have any instance attributes or methods that depend on the class state; all operations are performed based on the parameters provided to the static methods.
-"""

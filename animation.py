@@ -38,8 +38,7 @@ sprite = sprite.convert("1")  # Convert to 1-bit color mode
 # Define the sprite size and position
 sprite_width, sprite_height = sprite.size
 print(f'width is :{sprite_width} height is :{sprite_height}')
-sprite_frame_width = 64  # Width of each sprite frame
-sprite_frame_height = 64  # Height of each sprite frame
+  # Height of each sprite frame
 
 # Split the sprite into 28 equal parts
 sprite_frames = []

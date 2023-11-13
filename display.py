@@ -2,74 +2,153 @@ import time
 import board
 import busio
 import digitalio
-import datetime
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
+from os import listdir
+import random
+import os
+from eventcontroller import EventController
 
+class Display:
+    OLED_WIDTH = 128
+    OLED_HEIGHT = 64
+    OLED_BORDER = 5
+    FONT_SIZE = 15
+    MONOCHROME = True
+    LOOPTIME = 0.1
+    WELCOME_MESSAGE_TIME = 5
+    SPRITE_FRAME_NUMBER = 28
+    FILE_NAME = None
+    REPLAY_ANIMATION_TIMES = 5
 
-class DisplayManager:
-    # A dictionary to store attendance records
-    WIDTH = 128
-    HEIGHT = 64
-    BORDER = 5
-    DISPLAY_RUN_TIME = 10
-    # Display Refresh
-    LOOPTIME = 1.0
-    @staticmethod
-    def recordFirst(student_id, student_name):
-        print("manijo")
-
-# A dictionary to store attendance records
-    @staticmethod
-    def displayMessageSuccessful(first_name,last_name,arrival_time):
-        digitalioraw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
-        draw.text((18,0), "REGISTRATION", font=font, fill=255)
-        draw.text((24, 16), f"SUCCESSFUL", font=font, fill=255)
-        draw.text((0, 32), f"{first_name}", font=font, fill=255)
-        draw.text((62, 32), f"{last_name}", font=font, fill=255)
-        draw.text((14, 48),f"TIME: {arrival_time}" , font=font, fill=255)
-        print("manijo")
-
-    @staticmethod
-    def displaySuccessfulRegistration(cls,first_name, last_name, arrival_time):
+    @classmethod
+    def initialize(cls):
+        oled_reset = digitalio.DigitalInOut(board.D4)
         i2c = board.I2C()
-        oled = adafruit_ssd1306.SSD1306_I2C(cls.WIDTH,cls.HEIGHT, i2c, addr=0x3C, reset=oled_reset)
-        print("manijo")
-        # Clear display.
-        oled.fill(0)
-        oled.show()
+        cls.oled = adafruit_ssd1306.SSD1306_I2C(cls.OLED_WIDTH, cls.OLED_HEIGHT, i2c, addr=0x3C, reset=oled_reset)
 
-        # Create blank image for drawing.
-        # Make sure to create image with mode '1' for 1-bit color.
-        image = Image.new("1", (oled.width, oled.height))
+        cls.oled.fill(0)
+        cls.oled.show()
+        cls.image = Image.new("1", (cls.oled.width, cls.oled.height))
+        cls.draw = ImageDraw.Draw(cls.image)
+        cls.font = ImageFont.truetype('PixelOperator.ttf', cls.FONT_SIZE)
 
-        # Get drawing object to draw on image.
-        draw = ImageDraw.Draw(image)
+    @classmethod
+    def create_sprite_frames(cls):
+        sprite_folder = "SPRITE"
+        bmp_folder = "BMP_FILES"
+        sprite_path = os.path.join(sprite_folder, bmp_folder, cls.FILE_NAME)
+        sprite = Image.open(sprite_path)
+        sprite = sprite.convert("1")
+        sprite_width, sprite_height = sprite.size
+        print(f'width is :{sprite_width} height is :{sprite_height}')
+        sprite_frames = []
+        for frame_number in range(cls.SPRITE_FRAME_NUMBER):
+            x = frame_number * cls.OLED_WIDTH
+            y = 0
+            frame = sprite.crop((x, y, x + cls.OLED_WIDTH, y + cls.OLED_HEIGHT))
+            sprite_frames.append(frame)
+        return sprite_frames
 
-        # Draw a white background
-        draw.rectangle((0, 0, oled.width, oled.height), outline=255, fill=255)
+    @classmethod
+    def run_animation(cls):
+        cls.initialize()
+        while True:
+            count = 1
+            cls.choose_random_sprite()
+            sprite_frames = cls.create_sprite_frames()
+            pointer = 0
+            while not EventController.animation_event.is_set():
+                cls.draw.rectangle((0, 0, cls.oled.width, cls.oled.height), outline=0, fill=0)
+                cls.draw.bitmap((32, 0), sprite_frames[pointer], fill=255)
+                cls.oled.image(cls.image)
+                cls.oled.show()
+                time.sleep(cls.LOOPTIME)
+                pointer += 1
+                if pointer >= cls.SPRITE_FRAME_NUMBER:
+                    pointer = 0
+                    count += 1
+                    if count == cls.REPLAY_ANIMATION_TIMES:
+                        break
 
-        font = ImageFont.truetype('PixelOperator.ttf', 15)
-        #font = ImageFont.load_default()
-        start_time = time.time()
-        while time.time()-start_time < cls.DISPLAY_RUN_TIME:
+    @classmethod
+    def gif_to_bmp(cls, filename: str):
+        # Assume filename is just the name of the GIF file, without any path
+        gif_path = os.path.join("SPRITE", "GIF_DOWNLOAD", filename)
 
-        # Draw a black filled box to clear the image.
+        # Check if the GIF file exists
+        if not os.path.exists(gif_path):
+            print(f"GIF file '{filename}' not found in 'SPRITE/GIF_DOWNLOAD' folder.")
+            return
+
+        gif = Image.open(gif_path)
+        print(f"Size: {gif.size}")
+        print(f"Frames: {gif.n_frames}")
+
+        if cls.MONOCHROME:
+            output = Image.new("1", (cls.OLED_WIDTH * gif.n_frames, cls.OLED_HEIGHT), 0)
+        else:
+            output = Image.new("RGB", (cls.OLED_WIDTH * gif.n_frames, cls.OLED_HEIGHT))
+
+        for frame in range(gif.n_frames):
+            gif.seek(frame)
+            resized_frame = gif.resize((cls.OLED_WIDTH, cls.OLED_HEIGHT))
+            position = (cls.OLED_HEIGHT * frame, 0)
+            output.paste(resized_frame, position)
+
+        if not cls.MONOCHROME:
+            output = output.convert("P", colors=8)
+
+        # Create the "Sprite" folder if it doesn't exist
+        sprite_folder = "SPRITE"
     
-            draw.rectangle((0, 0, oled.width, oled.height), outline=0, fill=0)
-            first_name = "john "
-            last_name = "lbalunye"
-            arrival_time =datetime.datetime.now().strftime("%H:%M:%S")
-        
-        # Pi Stats Display
-            draw.text((18,0), "REGISTRATION", font=font, fill=255)
-            draw.text((24, 16), f"SUCCESSFUL", font=font, fill=255)
-            draw.text((0, 32), f"{first_name}", font=font, fill=255)
-            draw.text((62, 32), f"{last_name}", font=font, fill=255)
-            draw.text((14, 48),f"TIME: {arrival_time}" , font=font, fill=255)
-        # Display image
-            oled.image(image)
-            oled.show()
-            time.sleep(cls.LOOPTIME)
-        
+        # Create the "BMP_Folder" inside the "Sprite" folder if it doesn't exist
+        bmp_folder = os.path.join(sprite_folder, "BMP_FILES")
+        if not os.path.exists(bmp_folder):
+            os.makedirs(bmp_folder)
+
+        # Specify the output file path inside the "BMP_Folder" folder
+        output_filename = os.path.join(bmp_folder, f"{filename}_{gif.n_frames}_frames.bmp")
+        output.save(output_filename)
+        cls.SPRITE_LIST.extend(output)
+        cls.SPRITE_LIST.append((output_filename, gif.n_frames))
+
+    @classmethod
+    def set_file_name(cls, filename):
+        cls.FILE_NAME = filename
+
+    @classmethod
+    def set_sprite_frame_number(cls, frame_number):
+        cls.SPRITE_FRAME_NUMBER = frame_number
+
+    @classmethod
+    def choose_random_sprite(cls):
+        if cls.SPRITE_LIST:
+            random_double = random.choice(cls.SPRITE_LIST)
+            cls.set_file_name(random_double[0])
+            cls.set_sprite_frame_number(random_double[1])
+        else:
+            print("SPRITE_LIST is empty. No random double to choose.")
+            return None
+    @classmethod
+    def welcome_message(cls):
+        while True:
+
+            EventController.animation_event.set()
+            # Draw a black filled box to clear the image.
+            cls.draw.rectangle((0, 0, cls.OLED_WIDTH, cls.OLED_HEIGHT), outline=0, fill=0)
+            # Pi Stats Display
+            cls.draw.text((0, 0), "IP: " + str('utf-8'), font=cls.font, fill=255)
+            cls.draw.text((0, 16), str("manijo") + "LA", font=cls.font, fill=255)
+            cls.draw.text((80, 16), str('utf-8') , font=cls.font, fill=255)
+            cls.draw.text((0, 32), str('utf-8'), font=cls.font, fill=255)
+            cls.draw.text((0, 48), str('utf-8'), font=cls.font, fill=255)
+            # Display image
+            cls.oled.image(cls.image)
+            cls.oled.show()
+            time.sleep(cls.WELCOME_MESSAGE_TIME)
+            EventController.animation_event.clear()
+
+
+
 

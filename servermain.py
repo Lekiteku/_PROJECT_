@@ -21,8 +21,7 @@ port = 9999
 socket_address = (host_ip, port)
 server_socket.bind(server_socket)
 print("Listening at :", socket_address)
-WIDTH = 480
-HEIGHT = 640
+WIDTH = 500
 while True:
     data, client_address = server_socket.recvfrom(BUFF_SIZE)
     if data == b'1':
@@ -31,7 +30,7 @@ while True:
 while True:
     frame = picam.capture_array()
     # Convert the frame to JPEG format
-    frame = imutils.resize(frame, width=WIDTH, height=HEIGHT)
+    frame = imutils.resize(frame, width=WIDTH)
     encoded, buffer= cv2.imencode('.jpg', frame,[cv2.IMWRITE_WEBP_QUALITY,80])
     message = base64.b64encode(buffer)
     server_socket.sendto(message,client_address)

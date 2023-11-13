@@ -7,7 +7,7 @@ import os
 
 # Set up the client socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-host_ip = '192.168.0.6'  # Replace with the IP address of the Raspberry Pi
+host_ip = '192.168.0.6'  
 port = 9999
 socket_address = (host_ip, port)
 
