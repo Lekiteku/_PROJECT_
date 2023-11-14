@@ -8,6 +8,7 @@ from os import listdir
 import random
 import os
 from eventcontroller import EventController
+from communication import CommunicationManager
 
 class Display:
     OLED_WIDTH = 128
@@ -23,6 +24,7 @@ class Display:
 
     @classmethod
     def initialize(cls):
+        CommunicationManager.start_display_server()
         oled_reset = digitalio.DigitalInOut(board.D4)
         i2c = board.I2C()
         cls.oled = adafruit_ssd1306.SSD1306_I2C(cls.OLED_WIDTH, cls.OLED_HEIGHT, i2c, addr=0x3C, reset=oled_reset)
@@ -133,16 +135,15 @@ class Display:
     @classmethod
     def welcome_message(cls):
         while True:
-
+            first_name , last_name , arrival_time = CommunicationManager.receive_display_data()
             EventController.animation_event.set()
             # Draw a black filled box to clear the image.
             cls.draw.rectangle((0, 0, cls.OLED_WIDTH, cls.OLED_HEIGHT), outline=0, fill=0)
             # Pi Stats Display
-            cls.draw.text((0, 0), "IP: " + str('utf-8'), font=cls.font, fill=255)
-            cls.draw.text((0, 16), str("manijo") + "LA", font=cls.font, fill=255)
-            cls.draw.text((80, 16), str('utf-8') , font=cls.font, fill=255)
-            cls.draw.text((0, 32), str('utf-8'), font=cls.font, fill=255)
-            cls.draw.text((0, 48), str('utf-8'), font=cls.font, fill=255)
+            cls.draw.text((0, 0), "WLECOME", font=cls.font, fill=255)
+            cls.draw.text((0, 16), str("FIRST NAME: ") + f"{first_name}", font=cls.font, fill=255)
+            cls.draw.text((0, 32), str('LAST NAME') + f"{last_name}",font=cls.font, fill=255)
+            cls.draw.text((0, 48), str('ARRIVAl TIME')+ f"{arrival_time}", font=cls.font, fill=255)
             # Display image
             cls.oled.image(cls.image)
             cls.oled.show()

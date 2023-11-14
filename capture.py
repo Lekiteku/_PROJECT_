@@ -8,6 +8,8 @@ class CameraStreamer:
     CAM_WIDTH = 640
     CAM_HEIGHT = 480
     WIDTH = 500
+
+    
     @classmethod
     def initialize_camera(cls):
         CommunicationManager.start_video_server()
@@ -22,9 +24,9 @@ class CameraStreamer:
         except Exception as e:
                 print(f"Error initializing camera: {e}")
                 return None
+
     @classmethod
     def send_images(cls):
-
         picam = cls.initialize_camera()
         try:
             while True:
@@ -37,7 +39,4 @@ class CameraStreamer:
             print(f"Error sending frame: {e}")
         finally:
             picam.stop()  # Stop the camera to release resources
-
-
-if __name__ == "__main__":
-    CommunicationManager.send_video_data()
+            CommunicationManager.stop_video_server()

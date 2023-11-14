@@ -5,9 +5,11 @@ import subprocess
 
 
 class StatusManager:
+    UPDATE_TIME = 2
     @classmethod
-    def send_status():
-        CommunicationManager.start_status_server()
+    def send_status(cls):
+
+        CommunicationManager.start_status_server
         while True:
             # Get system information
             cmd_ip = "hostname -I | cut -d\' \' -f1"
@@ -23,6 +25,6 @@ class StatusManager:
             data = {'ip':ip, 'cpu':cpu, 'mem_usage':mem_usage, 'disk':disk ,'temp':temp}
             message = json.dumps(data)
             CommunicationManager.send_status_data(message)
-            time.sleep(2)
+            time.sleep(cls.UPDATE_TIME)
 
     
