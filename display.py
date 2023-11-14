@@ -140,10 +140,11 @@ class Display:
             # Draw a black filled box to clear the image.
             cls.draw.rectangle((0, 0, cls.OLED_WIDTH, cls.OLED_HEIGHT), outline=0, fill=0)
             # Pi Stats Display
-            cls.draw.text((0, 0), "WLECOME", font=cls.font, fill=255)
-            cls.draw.text((0, 16), str("FIRST NAME: ") + f"{first_name}", font=cls.font, fill=255)
-            cls.draw.text((0, 32), str('LAST NAME') + f"{last_name}",font=cls.font, fill=255)
-            cls.draw.text((0, 48), str('ARRIVAl TIME')+ f"{arrival_time}", font=cls.font, fill=255)
+            cls.draw.text((18, 0), "REGISTRATION", font=cls.font, fill=255)
+            cls.draw.text((24, 16), "SUCCESSFUL ", font=cls.font, fill=255)
+            cls.draw.text((0, 32), f"{first_name}",font=cls.font, fill=255)
+            cls.draw.text((0, 32), f"{last_name}",font=cls.font, fill=255)
+            cls.draw.text((0, 48), f"{arrival_time}", font=cls.font, fill=255)
             # Display image
             cls.oled.image(cls.image)
             cls.oled.show()
