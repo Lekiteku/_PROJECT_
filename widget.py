@@ -13,11 +13,9 @@ class Widget(QMainWindow,Ui_MainWindow,Ui_Functions):
         self.setWindowTitle("SBMS")
         self.Exit_Button.clicked.connect(self.buttonClick)
         self.Connection_Button.clicked.connect(self.buttonClick)
-        self.Registration_Button.clicked.connect(self.buttonClick)
         self.Facial_Button.clicked.connect(self.buttonClick)
         self.Location_Button.clicked.connect(self.buttonClick)
-        self.Display.setAlignment(Qt.AlignCenter)
-        self.Display.setFixedSize(640, 480)
+        self.Video_Label.setAlignment(Qt.AlignCenter)
         self.capture = cv2.VideoCapture(0)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateFrame)
@@ -31,7 +29,7 @@ class Widget(QMainWindow,Ui_MainWindow,Ui_Functions):
             bytes_per_line = 3 * width
             q_image = QImage(frame.data, width, height, bytes_per_line, QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(q_image)
-            self.Display.setPixmap(pixmap)
+            self.Video_Label.setPixmap(pixmap)
 
     def closeEvent(self, event):
         self.capture.release()
@@ -45,28 +43,21 @@ class Widget(QMainWindow,Ui_MainWindow,Ui_Functions):
 
         # SHOW HOME PAGE
         if btnName == self.Facial_Button.objectName():
-            self.Stacked_Widget.setCurrentWidget(self.Facial_Recognition_Stacked_Widget)
+            self.stackedWidget.setCurrentWidget(self.Facial_Recognition_Widget)
             Ui_Functions.resetStyle(self, btnName)
             btn.setStyleSheet(Ui_Functions.selectMenu(btn.styleSheet()))
 
         # SHOW WIDGETS PAGE
         if btnName == self.Location_Button.objectName():
-            self.Stacked_Widget.setCurrentWidget(self.Proximity_Detection_Stacked_Widget)
+            self.stackedWidget.setCurrentWidget(self.Proximity_Detection_Widget)
             Ui_Functions.resetStyle(self, btnName)
             btn.setStyleSheet(Ui_Functions.selectMenu(btn.styleSheet()))
 
         # SHOW NEW PAGE
         if btnName == self.Connection_Button.objectName():
-            self.Stacked_Widget.setCurrentWidget(self.Connection_Stacked_Widget) # SET PAGE
+            self.stackedWidget.setCurrentWidget(self.Connection_Widget) # SET PAGE
             Ui_Functions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(Ui_Functions.selectMenu(btn.styleSheet())) # SELECT MENU
-
-
-        if btnName == self.Registration_Button.objectName():
-            self.Stacked_Widget.setCurrentWidget(self.Connection_Stacked_Widget) # SET PAGE
-            Ui_Functions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
-            btn.setStyleSheet(Ui_Functions.selectMenu(btn.styleSheet())) # SELECT MENU
-
 
         if btnName == self.Exit_Button:
 
