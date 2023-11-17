@@ -33,7 +33,7 @@ class Display:
         cls.oled.show()
         cls.image = Image.new("1", (cls.oled.width, cls.oled.height))
         cls.draw = ImageDraw.Draw(cls.image)
-        cls.font = ImageFont.truetype('PixelOperator.ttf', cls.FONT_SIZE)
+        #cls.font = ImageFont.truetype('PixelOperator.ttf', cls.FONT_SIZE)
 
     @classmethod
     def create_sprite_frames(cls):
