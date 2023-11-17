@@ -24,11 +24,10 @@ class Display:
 
     @classmethod
     def initialize(cls):
-        CommunicationManager.start_display_server()
+        #CommunicationManager.start_display_server()
         oled_reset = digitalio.DigitalInOut(board.D4)
         i2c = board.I2C()
         cls.oled = adafruit_ssd1306.SSD1306_I2C(cls.OLED_WIDTH, cls.OLED_HEIGHT, i2c, addr=0x3C, reset=oled_reset)
-
         cls.oled.fill(0)
         cls.oled.show()
         cls.image = Image.new("1", (cls.oled.width, cls.oled.height))
@@ -37,10 +36,10 @@ class Display:
 
     @classmethod
     def create_sprite_frames(cls):
-        sprite_folder = "SPRITE"
-        bmp_folder = "BMP_FILES"
-        sprite_path = os.path.join(sprite_folder, bmp_folder, cls.FILE_NAME)
-        sprite = Image.open(sprite_path)
+        #sprite_folder = "SPRITE"
+        #bmp_folder = "BMP_FILES"
+        #sprite_path = os.path.join(sprite_folder, bmp_folder, cls.FILE_NAME)
+        sprite = Image.open(cls.FILE_NAME)
         sprite = sprite.convert("1")
         sprite_width, sprite_height = sprite.size
         print(f'width is :{sprite_width} height is :{sprite_height}')
@@ -62,7 +61,7 @@ class Display:
             pointer = 0
             while not EventController.animation_event.is_set():
                 cls.draw.rectangle((0, 0, cls.oled.width, cls.oled.height), outline=0, fill=0)
-                cls.draw.bitmap((32, 0), sprite_frames[pointer], fill=255)
+                cls.draw.bitmap((0, 0), sprite_frames[pointer*cls.OLED_WIDTH], fill=255)
                 cls.oled.image(cls.image)
                 cls.oled.show()
                 time.sleep(cls.LOOPTIME)
@@ -77,42 +76,33 @@ class Display:
     def gif_to_bmp(cls, filename: str):
         # Assume filename is just the name of the GIF file, without any path
         gif_path = os.path.join("SPRITE", "GIF_DOWNLOAD", filename)
-
         # Check if the GIF file exists
         if not os.path.exists(gif_path):
             print(f"GIF file '{filename}' not found in 'SPRITE/GIF_DOWNLOAD' folder.")
             return
-
         gif = Image.open(gif_path)
         print(f"Size: {gif.size}")
         print(f"Frames: {gif.n_frames}")
-
         if cls.MONOCHROME:
             output = Image.new("1", (cls.OLED_WIDTH * gif.n_frames, cls.OLED_HEIGHT), 0)
         else:
             output = Image.new("RGB", (cls.OLED_WIDTH * gif.n_frames, cls.OLED_HEIGHT))
-
         for frame in range(gif.n_frames):
             gif.seek(frame)
             resized_frame = gif.resize((cls.OLED_WIDTH, cls.OLED_HEIGHT))
             position = (cls.OLED_HEIGHT * frame, 0)
             output.paste(resized_frame, position)
-
         if not cls.MONOCHROME:
             output = output.convert("P", colors=8)
-
         # Create the "Sprite" folder if it doesn't exist
         sprite_folder = "SPRITE"
-    
         # Create the "BMP_Folder" inside the "Sprite" folder if it doesn't exist
         bmp_folder = os.path.join(sprite_folder, "BMP_FILES")
         if not os.path.exists(bmp_folder):
             os.makedirs(bmp_folder)
-
         # Specify the output file path inside the "BMP_Folder" folder
         output_filename = os.path.join(bmp_folder, f"{filename}_{gif.n_frames}_frames.bmp")
         output.save(output_filename)
-        cls.SPRITE_LIST.extend(output)
         cls.SPRITE_LIST.append((output_filename, gif.n_frames))
 
     @classmethod
@@ -132,19 +122,23 @@ class Display:
         else:
             print("SPRITE_LIST is empty. No random double to choose.")
             return None
+
     @classmethod
     def welcome_message(cls):
         while True:
-            first_name , last_name , arrival_time = CommunicationManager.receive_display_data()
+            #first_name , last_name , arrival_time = CommunicationManager.receive_display_data()
             EventController.animation_event.set()
+            first_name = "john"
+            last_name = "lbalunye"
+            arrival_time = "15:25:17"
             # Draw a black filled box to clear the image.
             cls.draw.rectangle((0, 0, cls.OLED_WIDTH, cls.OLED_HEIGHT), outline=0, fill=0)
             # Pi Stats Display
             cls.draw.text((18, 0), "REGISTRATION", font=cls.font, fill=255)
             cls.draw.text((24, 16), "SUCCESSFUL ", font=cls.font, fill=255)
             cls.draw.text((0, 32), f"{first_name}",font=cls.font, fill=255)
-            cls.draw.text((0, 32), f"{last_name}",font=cls.font, fill=255)
-            cls.draw.text((0, 48), f"{arrival_time}", font=cls.font, fill=255)
+            cls.draw.text((64, 32), f"{last_name}",font=cls.font, fill=255)
+            cls.draw.text((24, 48), f"{arrival_time}", font=cls.font, fill=255)
             # Display image
             cls.oled.image(cls.image)
             cls.oled.show()

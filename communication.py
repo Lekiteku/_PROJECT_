@@ -33,8 +33,8 @@ class CommunicationManager:
 
     @classmethod
     def start_video_server(cls):
-        video_server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        video_server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, cls.VIDEO_BUFF_SIZE)
+        cls.video_server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        cls.video_server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, cls.VIDEO_BUFF_SIZE)
         cls.video_server_socket.bind((cls.HOST_IP, cls.VIDEO_PORT))
         print(f"Video Server listening on {cls.HOST_IP}:{cls.VIDEO_PORT}")
         while True:
@@ -112,11 +112,7 @@ class CommunicationManager:
     @classmethod
     def receive_display_data(cls):
         data = cls.display_server_socket.recv(cls.DISPLAY_BUFF_SIZE)
-        decoded_data = json.loads(data.decode())
-        first_name = decoded_data['first_name']
-        last_name = decoded_data['lst_name']
-        arrival_time = decoded_data['arrival_time']
-        return first_name,last_name,arrival_time
+        return data
     
 
     @classmethod
@@ -133,7 +129,7 @@ class CommunicationManager:
         print(f"Location Server listening on {cls.HOST_IP}:{cls.SMS_PORT}")
 
         while True:
-            data, client_address = cls.display_server_socket.recvfrom(cls.SMS_BUFF_SIZE)
+            data, client_address = cls.sms_server_socket.recvfrom(cls.SMS_BUFF_SIZE)
             if data == b'1':
                 print('Location connection established with', client_address)
                 cls.SMS_CLIENT_ADDRESS = client_address
@@ -141,14 +137,8 @@ class CommunicationManager:
 
     @classmethod
     def receive_sms_data(cls):
-        data = cls.display_server_socket.recv(cls.DISPLAY_BUFF_SIZE)
-        decoded_data = json.loads(data.decode())
-        parent_first_name = decoded_data['parent_first_name']
-        parent_last_name = decoded_data['parent_last_name']
-        student_first_name = decoded_data['student_first_name']
-        student_last_name = decoded_data['student_last_name']
-
-        return parent_first_name,parent_last_name,student_first_name,student_last_name,arrival_time
+        data = cls.sms_server_socket.recv(cls.DISPLAY_BUFF_SIZE)
+        return data
 
 
 
