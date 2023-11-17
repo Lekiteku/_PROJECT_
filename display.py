@@ -21,6 +21,7 @@ class Display:
     SPRITE_FRAME_NUMBER = 28
     FILE_NAME = None
     REPLAY_ANIMATION_TIMES = 5
+    SPRITE_LIST = []
 
     @classmethod
     def initialize(cls):
@@ -157,7 +158,6 @@ class Display:
             cls.oled.show()
             time.sleep(cls.WELCOME_MESSAGE_TIME)
             EventController.animation_event.clear()
-
 
 
 
