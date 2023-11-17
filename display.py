@@ -62,7 +62,7 @@ class Display:
             pointer = 0
             while not EventController.animation_event.is_set():
                 cls.draw.rectangle((0, 0, cls.oled.width, cls.oled.height), outline=0, fill=0)
-                cls.draw.bitmap((0, 0), sprite_frames[pointer*cls.OLED_WIDTH], fill=255)
+                cls.draw.bitmap((0, 0), sprite_frames[pointer], fill=255)
                 cls.oled.image(cls.image)
                 cls.oled.show()
                 time.sleep(cls.LOOPTIME)
