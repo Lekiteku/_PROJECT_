@@ -5,9 +5,9 @@ labels.yml
 main_test.py
 test.py
 test2.py
+test3.py
+test4.py
 jokes.py
 .vscode
-wigdet.py
-wigdet.ui
 face_trained.yml
 _pycache_/

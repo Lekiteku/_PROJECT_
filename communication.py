@@ -11,7 +11,7 @@ import numpy as np
 
 class CommunicationManager:
     
-    HOST_IP = '192.168.0.6'
+    HOST_IP = ''
 
     VIDEO_PORT = 9999
     VIDEO_BUFF_SIZE = 65536
@@ -98,6 +98,10 @@ class CommunicationManager:
     This static method takes a single parameter, used_indexes, which is a set that stores the used indexes. It clears the set of used indexes, effectively resetting it.
     """
     @staticmethod
+    def set_host_ip(new_host_ip):
+        CommunicationManager.HOST_IP = new_host_ip
+
+    @staticmethod
     def reset_used_indexes(cls):
         cls.used_indexes.clear()
 
@@ -115,7 +119,7 @@ class CommunicationManager:
 
     @classmethod
     def receive_video_data(cls):
-        data =cls.video_client_socket.recvfrom(cls.VIDEO_BUFF_SIZE)
+        data,server_address =cls.video_client_socket.recvfrom(cls.VIDEO_BUFF_SIZE)
         return data
 
     @classmethod
@@ -126,24 +130,29 @@ class CommunicationManager:
     @classmethod
     def start_status_server(cls):
         cls.status_client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        cls.status_client_socket.bind((cls.HOST_IP, cls.STATUS_PORT))
         print("Establishing a connection with Status Server")
 
-        while True:
         # Initial connection message to the server
-            cls.video_client_socket.sendto(b'2', (cls.HOST_IP,cls.STATUS_PORT))
-            data, server_address = cls.video_client_socket.recvfrom(cls.STATUS_BUFF_SIZE)
-            print("Connection established with the Status Server.")
+        cls.status_client_socket.sendto(b'2', (cls.HOST_IP,cls.STATUS_PORT))
+        data, server_address = cls.status_client_socket.recvfrom(cls.STATUS_BUFF_SIZE)
+        print(f"Connection established with the Status Server.{server_address}")
 
 
     @classmethod
     def receive_status_data(cls):
-        data = cls.status_client_socket.recvfrom(cls.STATUS_BUFF_SIZE)
-        return data
+        if cls.status_client_socket is not None:
+            data = cls.status_client_socket.recv(cls.STATUS_BUFF_SIZE)
+            return data
+        else:
+            return None
 
     @classmethod
     def stop_status_server(cls):
-        cls.status_client_socket.close()
+        if cls.status_client_socket is not None:
+            cls.status_client_socket.close()
+            cls.status_client_socket = None  # Reset the socket variable after closing
+        else:
+            print("Error: Status server not started.")
 
     @classmethod
     def start_location_server(cls):
@@ -154,7 +163,6 @@ class CommunicationManager:
         while True:
         # Initial connection message to the server
             cls.location_client_socket.sendto(b'3', (cls.HOST_IP,cls.LOCATION_PORT))
-            data, server_address = cls.location_client_socket.recvfrom(cls.LOCATION_BUFF_SIZE)
             print("Connection established with the Location Server.")
 
     @classmethod

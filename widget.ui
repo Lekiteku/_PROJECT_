@@ -18,7 +18,7 @@
    </size>
   </property>
   <property name="cursor">
-   <cursorShape>OpenHandCursor</cursorShape>
+   <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -531,7 +531,7 @@ Button */
 	background-color: rgb(52, 59, 72);
 }
 #pagesContainer QPushButton:hover {
-	background-color: rgb(57, 65, 80);
+	background-color: rgb(60, 68, 83);
 	border: 2px solid rgb(61, 70, 86);
 }
 #pagesContainer QPushButton:pressed {	
@@ -1045,7 +1045,7 @@ Button */
                    </font>
                   </property>
                   <property name="text">
-                   <string>School Bus Monitoring System (TIE PROJECT DEMO)</string>
+                   <string>Bus Unit Monitoring System (TIE PROJECT DEMO)</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1135,11 +1135,17 @@ Button */
                    </property>
                    <item>
                     <widget class="QStackedWidget" name="stackedWidget">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                       <horstretch>1</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">background: transparent;</string>
                      </property>
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>2</number>
                      </property>
                      <widget class="QWidget" name="Facial_Recognition_Widget">
                       <property name="styleSheet">
@@ -1193,7 +1199,7 @@ background-repeat: no-repeat;</string>
                                 </size>
                                </property>
                                <property name="text">
-                                <string>                                                 WAITING FOR VIDEO DATA FROM BUS UNIT</string>
+                                <string>                                                 WAITING FOR VIDEO</string>
                                </property>
                               </widget>
                              </item>
@@ -1660,6 +1666,12 @@ background-repeat: no-repeat;</string>
                       <layout class="QHBoxLayout" name="horizontalLayout_7">
                        <item>
                         <widget class="QFrame" name="LEFT_CONNECTION">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="frameShape">
                           <enum>QFrame::StyledPanel</enum>
                          </property>
@@ -1667,7 +1679,7 @@ background-repeat: no-repeat;</string>
                           <enum>QFrame::Raised</enum>
                          </property>
                          <layout class="QVBoxLayout" name="verticalLayout_9">
-                          <item alignment="Qt::AlignTop">
+                          <item>
                            <widget class="QFrame" name="LEFT_TOP_2">
                             <property name="frameShape">
                              <enum>QFrame::StyledPanel</enum>
@@ -1675,47 +1687,9 @@ background-repeat: no-repeat;</string>
                             <property name="frameShadow">
                              <enum>QFrame::Raised</enum>
                             </property>
-                            <layout class="QVBoxLayout" name="verticalLayout_10">
-                             <item>
-                              <widget class="QLabel" name="LEFT_TOP_TITLE">
-                               <property name="maximumSize">
-                                <size>
-                                 <width>16777215</width>
-                                 <height>20</height>
-                                </size>
-                               </property>
-                               <property name="text">
-                                <string>Connect Bus Unit</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item>
-                              <widget class="QLineEdit" name="IP_ENTER">
-                               <property name="minimumSize">
-                                <size>
-                                 <width>0</width>
-                                 <height>30</height>
-                                </size>
-                               </property>
-                               <property name="maximumSize">
-                                <size>
-                                 <width>250</width>
-                                 <height>16777215</height>
-                                </size>
-                               </property>
-                               <property name="styleSheet">
-                                <string notr="true">background-color: rgb(33, 37, 43);</string>
-                               </property>
-                               <property name="text">
-                                <string>ENTER PI ADDRESS</string>
-                               </property>
-                               <property name="placeholderText">
-                                <string>Type here</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item>
-                              <widget class="QPushButton" name="SET_IP">
+                            <layout class="QFormLayout" name="formLayout">
+                             <item row="2" column="0">
+                              <widget class="QPushButton" name="connectIP">
                                <property name="minimumSize">
                                 <size>
                                  <width>200</width>
@@ -1761,6 +1735,91 @@ background-repeat: no-repeat;</string>
                                </property>
                               </widget>
                              </item>
+                             <item row="2" column="1">
+                              <widget class="QPushButton" name="disconnectIP">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>200</width>
+                                 <height>30</height>
+                                </size>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>150</width>
+                                 <height>16777215</height>
+                                </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <family>Segoe UI</family>
+                                 <pointsize>10</pointsize>
+                                 <weight>50</weight>
+                                 <italic>false</italic>
+                                 <bold>false</bold>
+                                </font>
+                               </property>
+                               <property name="cursor">
+                                <cursorShape>PointingHandCursor</cursorShape>
+                               </property>
+                               <property name="contextMenuPolicy">
+                                <enum>Qt::PreventContextMenu</enum>
+                               </property>
+                               <property name="toolTipDuration">
+                                <number>-8</number>
+                               </property>
+                               <property name="layoutDirection">
+                                <enum>Qt::LeftToRight</enum>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">background-color: rgb(52, 59, 72);</string>
+                               </property>
+                               <property name="text">
+                                <string>DISCONNECT</string>
+                               </property>
+                               <property name="icon">
+                                <iconset resource="resources.qrc">
+                                 <normaloff>:/icons/images/icons/cil-wifi-signal-off.png</normaloff>:/icons/images/icons/cil-wifi-signal-off.png</iconset>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="1" column="0" colspan="2">
+                              <widget class="QLineEdit" name="IP_ENTER">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>0</width>
+                                 <height>30</height>
+                                </size>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>350</width>
+                                 <height>16777215</height>
+                                </size>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">background-color: rgb(33, 37, 43);</string>
+                               </property>
+                               <property name="text">
+                                <string/>
+                               </property>
+                               <property name="placeholderText">
+                                <string>Enter IP address here: Example 192.168.0.20</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="0" column="0" colspan="2">
+                              <widget class="QLabel" name="LEFT_TOP_TITLE">
+                               <property name="maximumSize">
+                                <size>
+                                 <width>16777215</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                               <property name="text">
+                                <string>Connect Bus Unit</string>
+                               </property>
+                              </widget>
+                             </item>
                             </layout>
                            </widget>
                           </item>
@@ -1782,14 +1841,44 @@ background-repeat: no-repeat;</string>
                              </item>
                              <item>
                               <widget class="QPlainTextEdit" name="TERMINAL_PLAINTEXTEDIT">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
                                <property name="minimumSize">
                                 <size>
                                  <width>100</width>
                                  <height>200</height>
                                 </size>
                                </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>500</width>
+                                 <height>16777214</height>
+                                </size>
+                               </property>
+                               <property name="cursor" stdset="0">
+                                <cursorShape>UpArrowCursor</cursorShape>
+                               </property>
+                               <property name="focusPolicy">
+                                <enum>Qt::NoFocus</enum>
+                               </property>
+                               <property name="contextMenuPolicy">
+                                <enum>Qt::DefaultContextMenu</enum>
+                               </property>
+                               <property name="toolTipDuration">
+                                <number>-3</number>
+                               </property>
                                <property name="styleSheet">
                                 <string notr="true">background-color: rgb(33, 37, 43);</string>
+                               </property>
+                               <property name="readOnly">
+                                <bool>true</bool>
+                               </property>
+                               <property name="backgroundVisible">
+                                <bool>false</bool>
                                </property>
                               </widget>
                              </item>
@@ -1801,6 +1890,12 @@ background-repeat: no-repeat;</string>
                        </item>
                        <item alignment="Qt::AlignTop">
                         <widget class="QFrame" name="RIGHT_CONNECTION">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
                          <property name="focusPolicy">
                           <enum>Qt::WheelFocus</enum>
                          </property>
@@ -1819,6 +1914,50 @@ background-repeat: no-repeat;</string>
                            </widget>
                           </item>
                           <item>
+                           <widget class="QFrame" name="IP">
+                            <property name="frameShape">
+                             <enum>QFrame::StyledPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                             <enum>QFrame::Raised</enum>
+                            </property>
+                            <layout class="QHBoxLayout" name="horizontalLayout_10">
+                             <item>
+                              <widget class="QLabel" name="IP_LABEL">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
+                               <property name="text">
+                                <string>IP Address</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="IP_Lcd">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="minimumSize">
+                                <size>
+                                 <width>200</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
+                               <property name="text">
+                                <string>ip</string>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </widget>
+                          </item>
+                          <item>
                            <widget class="QFrame" name="TEMPERATURE">
                             <property name="frameShape">
                              <enum>QFrame::StyledPanel</enum>
@@ -1826,18 +1965,30 @@ background-repeat: no-repeat;</string>
                             <property name="frameShadow">
                              <enum>QFrame::Raised</enum>
                             </property>
-                            <layout class="QVBoxLayout" name="verticalLayout_20">
+                            <layout class="QHBoxLayout" name="horizontalLayout_6">
                              <item>
-                              <widget class="QLabel" name="TEMPEARTUR_LABEL">
+                              <widget class="QLabel" name="TEMPEARTURE_LABEL">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
                                <property name="text">
                                 <string>Temperature</string>
                                </property>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QProgressBar" name="TEMERATURE_PROGRSSBAR">
-                               <property name="value">
-                                <number>24</number>
+                              <widget class="QLabel" name="Temperature_Lcd">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>200</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
+                               <property name="text">
+                                <string>temp</string>
                                </property>
                               </widget>
                              </item>
@@ -1852,18 +2003,30 @@ background-repeat: no-repeat;</string>
                             <property name="frameShadow">
                              <enum>QFrame::Raised</enum>
                             </property>
-                            <layout class="QVBoxLayout" name="verticalLayout_14">
+                            <layout class="QHBoxLayout" name="horizontalLayout_8">
                              <item>
                               <widget class="QLabel" name="MEMORY_LABEL">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
                                <property name="text">
-                                <string>Memory</string>
+                                <string>Memory Usage</string>
                                </property>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QProgressBar" name="MEMORY_PROGRESSBAR">
-                               <property name="value">
-                                <number>24</number>
+                              <widget class="QLabel" name="Memory_Lcd">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>200</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
+                               <property name="text">
+                                <string>memory</string>
                                </property>
                               </widget>
                              </item>
@@ -1872,24 +2035,80 @@ background-repeat: no-repeat;</string>
                           </item>
                           <item>
                            <widget class="QFrame" name="CPU">
+                            <property name="minimumSize">
+                             <size>
+                              <width>100</width>
+                              <height>0</height>
+                             </size>
+                            </property>
                             <property name="frameShape">
                              <enum>QFrame::StyledPanel</enum>
                             </property>
                             <property name="frameShadow">
                              <enum>QFrame::Raised</enum>
                             </property>
-                            <layout class="QVBoxLayout" name="verticalLayout_13">
+                            <layout class="QHBoxLayout" name="horizontalLayout_9">
                              <item>
                               <widget class="QLabel" name="CPU_LABEL">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
                                <property name="text">
                                 <string>CPU</string>
                                </property>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QProgressBar" name="CPU_PROGRESSBAR">
-                               <property name="value">
-                                <number>24</number>
+                              <widget class="QLabel" name="Cpu_Lcd">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>200</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
+                               <property name="text">
+                                <string>cpu</string>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QFrame" name="DISK">
+                            <property name="frameShape">
+                             <enum>QFrame::StyledPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                             <enum>QFrame::Raised</enum>
+                            </property>
+                            <layout class="QHBoxLayout" name="horizontalLayout_11">
+                             <item>
+                              <widget class="QLabel" name="DISK_LABEL">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
+                               <property name="text">
+                                <string>Disk</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="Disk_Lcd">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>200</width>
+                                 <height>0</height>
+                                </size>
+                               </property>
+                               <property name="text">
+                                <string>disk</string>
                                </property>
                               </widget>
                              </item>
