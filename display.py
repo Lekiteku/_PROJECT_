@@ -36,9 +36,9 @@ class Display:
 
     @classmethod
     def create_sprite_frames(cls):
-        #sprite_folder = "SPRITE"
-        #bmp_folder = "BMP_FILES"
-        #sprite_path = os.path.join(sprite_folder, bmp_folder, cls.FILE_NAME)
+        sprite_folder = "SPRITE"
+        bmp_folder = "BMP_FILES"
+        sprite_path = os.path.join(sprite_folder, bmp_folder, cls.FILE_NAME)
         sprite = Image.open(cls.FILE_NAME)
         sprite = sprite.convert("1")
         sprite_width, sprite_height = sprite.size
@@ -76,34 +76,47 @@ class Display:
     def gif_to_bmp(cls, filename: str):
         # Assume filename is just the name of the GIF file, without any path
         gif_path = os.path.join("SPRITE", "GIF_DOWNLOAD", filename)
+
         # Check if the GIF file exists
         if not os.path.exists(gif_path):
             print(f"GIF file '{filename}' not found in 'SPRITE/GIF_DOWNLOAD' folder.")
             return
+
         gif = Image.open(gif_path)
         print(f"Size: {gif.size}")
         print(f"Frames: {gif.n_frames}")
+
         if cls.MONOCHROME:
             output = Image.new("1", (cls.OLED_WIDTH * gif.n_frames, cls.OLED_HEIGHT), 0)
         else:
             output = Image.new("RGB", (cls.OLED_WIDTH * gif.n_frames, cls.OLED_HEIGHT))
-        for frame in range(gif.n_frames):
+
+        for frame in range(0, gif.n_frames):
             gif.seek(frame)
             resized_frame = gif.resize((cls.OLED_WIDTH, cls.OLED_HEIGHT))
+            position = (cls.OLED_WIDTH * frame, 0)
             position = (cls.OLED_HEIGHT * frame, 0)
             output.paste(resized_frame, position)
+
         if not cls.MONOCHROME:
             output = output.convert("P", colors=8)
+
         # Create the "Sprite" folder if it doesn't exist
         sprite_folder = "SPRITE"
+
         # Create the "BMP_Folder" inside the "Sprite" folder if it doesn't exist
         bmp_folder = os.path.join(sprite_folder, "BMP_FILES")
         if not os.path.exists(bmp_folder):
             os.makedirs(bmp_folder)
+
         # Specify the output file path inside the "BMP_Folder" folder
         output_filename = os.path.join(bmp_folder, f"{filename}_{gif.n_frames}_frames.bmp")
         output.save(output_filename)
         cls.SPRITE_LIST.append((output_filename, gif.n_frames))
+
+        # Navigate back to the original folder
+        original_folder = os.path.dirname(os.path.dirname(gif_path))
+        print(f"Original Folder: {original_folder}")
 
     @classmethod
     def set_file_name(cls, filename):
