@@ -16,7 +16,7 @@ class Display:
     OLED_BORDER = 5
     FONT_SIZE = 15
     MONOCHROME = True
-    LOOPTIME = 0.1
+    LOOPTIME = 0
     WELCOME_MESSAGE_TIME = 5
     SPRITE_FRAME_NUMBER = 28
     FILE_NAME = None
@@ -55,6 +55,7 @@ class Display:
     @classmethod
     def run_animation(cls):
         cls.initialize()
+        print("thread run animation started")
         while True:
             count = 1
             cls.choose_random_sprite()
@@ -96,7 +97,6 @@ class Display:
             gif.seek(frame)
             resized_frame = gif.resize((cls.OLED_WIDTH, cls.OLED_HEIGHT))
             position = (cls.OLED_WIDTH * frame, 0)
-            position = (cls.OLED_HEIGHT * frame, 0)
             output.paste(resized_frame, position)
 
         if not cls.MONOCHROME:
@@ -139,6 +139,8 @@ class Display:
 
     @classmethod
     def welcome_message(cls):
+        time.sleep(10)
+        print("welcome thread started")
         while True:
             #first_name , last_name , arrival_time = CommunicationManager.receive_display_data()
             EventController.animation_event.set()
