@@ -1,17 +1,10 @@
-"""
-CommunicationManager Class
-
-This code defines the CommunicationManager class, a utility for managing parent information based on location indexes. It provides static methods for retrieving parent information, printing selected parents, and resetting used indexes.
-
-Class Methods:
-"""
 import socket
 import json
 import numpy as np
 
 class CommunicationManager:
     
-    HOST_IP = ''
+    HOST_IP = '192.168.100.20'
 
     VIDEO_PORT = 9999
     VIDEO_BUFF_SIZE = 65536
@@ -174,26 +167,23 @@ class CommunicationManager:
         cls.location_client_socket.close()
 
     @classmethod
-    def start_display_server(cls):
+    def connect_display_server(cls):
         cls.display_client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        cls.display_client_socket.bind((cls.HOST_IP, cls.DISPLAY_PORT))
-
         print("Establishing a connection with Display Server")
-
-        while True:
         # Initial connection message to the server
-            cls.display_client_socket.sendto(b'4', (cls.HOST_IP,cls.DISPLAY_PORT))
-            data, server_address = cls.display_client_socket.recvfrom(cls.DISPLAY_BUFF_SIZE)
-            print("Connection established with the Display Server.")
+        cls.display_client_socket.connect((cls.HOST_IP,cls.DISPLAY_PORT))
+        print("Connection established with the Display Server.")
 
 
     @classmethod
-    def send_display_data(cls,message):
-        cls.display_client_socket.sendall(message)
+    def send_display_data(cls,first_name,last_name,arrival_time):
+        data = {'first_name': first_name , 'last_name': last_name, 'arrival_time': arrival_time}
+        message = json.dumps(data)
+        cls.display_client_socket.send(message.encode())
     
 
     @classmethod
-    def stop_display_server(cls):
+    def disconnect_display_server(cls):
         cls.display_client_socket.close()
 
 
