@@ -8,7 +8,7 @@ Display.gif_to_bmp("test1.gif")
 Display.gif_to_bmp("TEST2.gif")
 Display.gif_to_bmp("TEST3.gif")
 Display.gif_to_bmp("test4.gif")
-Dispay.gif_to_bmp("test5")
+Display.gif_to_bmp("test5")
 Display.run_animation()
 
 # Start the threads

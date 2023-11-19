@@ -77,25 +77,35 @@ class CommunicationManager:
 
 
     @classmethod
-    def start_location_server(cls):
-        cls.location_server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        cls.location_server_socket.bind((cls.HOST_IP, cls.LOCATION_PORT))
-        print(f"Location Server listening on {cls.HOST_IP}:{cls.LOCATION_PORT}")
-
-        while True:
-            data, client_address = cls.location_server_socket.recvfrom(cls.LOCATION_BUFF_SIZE)
-            if data == b'3':
-                print('Location connection established with', client_address)
-                cls.LOCATION_CLIENT_ADDRESS = client_address
-                break
-
-    @classmethod
     def send_location_data(cls, message):
-        cls.location_server_socket.sendto(message, cls.LOCATION_CLIENT_ADDRESS)
+        cls.location_server_socket.sendto(message.encode(), cls.LOCATION_CLIENT_ADDRESS)
 
     @classmethod
     def stop_location_server(cls):
         cls.location_server_socket.close()
+
+   
+    @classmethod
+    def start_sms_server(cls):
+        cls.sms_server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        cls.sms_server_socket.bind((cls.HOST_IP, cls.SMS_PORT))
+        print(f"SMS Server listening on {cls.HOST_IP}:{cls.SMS_PORT}")
+        cls.sms_server_socket.listen(1)
+
+    @classmethod
+    def receive_sms_data(cls):
+        client_sms_port, client_sms_address = cls.display_server_socket.accept()
+        data = client_sms_port.recv(cls.DISPLAY_BUFF_SIZE)
+        decoded_data = json.loads((data.decode()))
+        first_name = decoded_data['first_name']
+        last_name = decoded_data['last_name']
+        arrival_time = decoded_data['first_name']
+        return first_name,last_name,
+
+
+    @classmethod
+    def stop_sms_server(cls):
+        cls.sms_server_socket.close()
 
     @classmethod
     def start_display_server(cls):
@@ -119,30 +129,3 @@ class CommunicationManager:
     @classmethod
     def stop_display_server(cls):
         cls.display_server_socket.close()
-
-
-
-    @classmethod
-    def start_sms_server(cls):
-        cls.sms_server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        cls.sms_server_socket.bind((cls.HOST_IP, cls.SMS_PORT))
-        
-        print(f"Location Server listening on {cls.HOST_IP}:{cls.SMS_PORT}")
-
-        while True:
-            data, client_address = cls.sms_server_socket.recvfrom(cls.SMS_BUFF_SIZE)
-            if data == b'1':
-                print('Location connection established with', client_address)
-                cls.SMS_CLIENT_ADDRESS = client_address
-                break
-
-    @classmethod
-    def receive_sms_data(cls):
-        data = cls.sms_server_socket.recv(cls.DISPLAY_BUFF_SIZE)
-        return data
-
-
-
-    @classmethod
-    def stop_display_server(cls):
-        cls.sms_server_socket.close()
