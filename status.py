@@ -23,7 +23,6 @@ class StatusManager:
             temp = subprocess.check_output(cmd_temp, shell=True).decode("utf-8").strip()
             
             # Display parameters before creating the data dictionary
-            print(f"IP: {ip}, CPU: {cpu}, Mem Usage: {mem_usage}, Disk: {disk}, Temp: {temp}")
 
             data = {'ip': ip, 'cpu': cpu, 'mem_usage': mem_usage, 'disk': disk, 'temp': temp}
             message = json.dumps(data)

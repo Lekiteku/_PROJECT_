@@ -24,6 +24,7 @@ class CommunicationManager:
     DISPLAY_BUFF_SIZE = 1024
     DISPLAY_CLIENT_ADDRESS = ""
     display_server_socket = None
+    dispay_conn = None
 
 
     SMS_PORT = 7777
@@ -100,19 +101,19 @@ class CommunicationManager:
     def start_display_server(cls):
         cls.display_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         cls.display_server_socket.bind((cls.HOST_IP, cls.DISPLAY_PORT))
-        cls.status_server_socket.listen(1)
-
-        print(f"Location Server listening on {cls.HOST_IP}:{cls.DISPLAY_PORT}")
-        conn, addr = cls.status_server_socket.accept()
-        with conn:
-            print('Status connection established with', addr)
-            cls.STATUS_CLIENT_ADDRESS = addr
+        print(f"Display Server listening on {cls.HOST_IP}:{cls.STATUS_PORT}")
+        cls.display_server_socket.listen(1)
 
 
     @classmethod
     def receive_display_data(cls):
-        data = cls.display_server_socket.recv(cls.DISPLAY_BUFF_SIZE)
-        return data
+        client_display_port, client_display_address = cls.display_server_socket.accept()
+        data = client_display_port.recv(cls.DISPLAY_BUFF_SIZE)
+        decoded_data = json.loads((data.decode()))
+        first_name = decoded_data['first_name']
+        last_name = decoded_data['last_name']
+        arrival_time = decoded_data['first_name']
+        return first_name,last_name,arrival_time
     
 
     @classmethod

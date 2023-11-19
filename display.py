@@ -142,7 +142,7 @@ class Display:
         time.sleep(10)
         print("welcome thread started")
         while True:
-            #first_name , last_name , arrival_time = CommunicationManager.receive_display_data()
+            first_name , last_name , arrival_time = CommunicationManager.receive_display_data()
             EventController.animation_event.set()
             first_name = "john"
             last_name = "lbalunye"
