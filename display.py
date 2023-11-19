@@ -33,7 +33,7 @@ class Display:
         cls.oled.show()
         cls.image = Image.new("1", (cls.oled.width, cls.oled.height))
         cls.draw = ImageDraw.Draw(cls.image)
-        #cls.font = ImageFont.truetype('PixelOperator.ttf', cls.FONT_SIZE)
+        cls.font = ImageFont.truetype('PixelOperator.ttf', cls.FONT_SIZE)
 
     @classmethod
     def create_sprite_frames(cls):
@@ -144,9 +144,6 @@ class Display:
         while True:
             first_name , last_name , arrival_time = CommunicationManager.receive_display_data()
             EventController.animation_event.set()
-            first_name = "john"
-            last_name = "lbalunye"
-            arrival_time = "15:25:17"
             # Draw a black filled box to clear the image.
             cls.draw.rectangle((0, 0, cls.OLED_WIDTH, cls.OLED_HEIGHT), outline=0, fill=0)
             # Pi Stats Display
