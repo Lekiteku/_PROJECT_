@@ -3,7 +3,7 @@ import time
 import numpy as np
 import math
 
-class Location:
+class LocationManager:
   
     @staticmethod
     def haversine_distance(lat1, lon1, lat2, lon2):
@@ -33,7 +33,7 @@ class Location:
     @staticmethod
     def assess_distance(lat1, lon1, lat2_array, lon2_array, distance_threshold):
         # Calculate the Haversine distance using the existing haversine_distance function
-        distances = Location.haversine_distance(lat1, lon1, lat2_array, lon2_array)
+        distances = LocationManager.haversine_distance(lat1, lon1, lat2_array, lon2_array)
 
         # Check if the distances are greater than the specified threshold
         indices = np.where(distances > distance_threshold)[0]

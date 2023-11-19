@@ -128,7 +128,14 @@ class Student(Person):
     def set_student_id(self, student_id):
         self.student_id = student_id
 
+    def create_folder(self):
+        base_folder = "dataset"
+        folder_name = os.path.join(base_folder, f"{self.student_id}")
 
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+            print(f"Created folder for {self.student_id} in the 'photos' folder.")
+            
 class SchoolBusStaff(Person):
     def __init__(self, first_name, last_name, gender, staff_id, role):
         super().__init__(first_name, last_name, gender)

@@ -3,7 +3,7 @@ import numpy as np  # Import 'numpy' as 'np' for numerical operations
 import os  # Import the 'os' module for file and directory operations
 
 # Define the directory where training images are located.
-DIR = r'.\dataset'
+DIR = r'dataset'
 
 # Create an empty list to store the names of the individuals whose faces you want to recognize.
 people = []
@@ -39,10 +39,10 @@ while True:
         
         # Loop through the detected faces and draw rectangles and labels.
         for (x, y, w, h) in face_rect:
-            faces_roi = gray[y:y+h, x:x+h]
-            
+            faces_roi = gray[y:y+h, x:x+h]    
             # Recognize the face and get the label and confidence.
             label, confidence = face_recognizer.predict(faces_roi)
+            print(type(label))
             cv.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), thickness=1)
             cv.rectangle(frame, (x, y-40), (x+w, y), (0, 255, 0), -1)
             cv.putText(frame, str(people[label]), (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), thickness=2)
