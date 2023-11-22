@@ -23,4 +23,5 @@ thread3.start()
 # Wait for all threads to finish
 thread1.join()
 thread2.join()
+thread3.join()
 print("yesdee")
