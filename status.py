@@ -9,6 +9,7 @@ class StatusManager:
     @classmethod
     def send_status(cls):
         CommunicationManager.start_status_server()
+        
         while True:
             # Get system information
             cmd_ip = "hostname -I | cut -d\' \' -f1"

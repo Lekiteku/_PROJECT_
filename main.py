@@ -8,8 +8,7 @@ Display.gif_to_bmp("test1.gif")
 Display.gif_to_bmp("TEST2.gif")
 Display.gif_to_bmp("TEST3.gif")
 Display.gif_to_bmp("test4.gif")
-Display.gif_to_bmp("test5")
-Display.run_animation()
+Display.gif_to_bmp("test5.gif")
 
 # Start the threads
 thread1 = threading.Thread(target=Display.run_animation)
